@@ -1,4 +1,4 @@
-package com.identityx.api.entity;
+package com.identityx.api.common.model;
 
 import java.time.LocalDateTime;
 import org.springframework.data.annotation.CreatedDate;
@@ -17,7 +17,7 @@ import lombok.Setter;
 @Getter
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
-public class BaseEntity {
+public abstract class BaseEntity {
 
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

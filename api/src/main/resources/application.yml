@@ -2,6 +2,31 @@ spring:
   application:
     name: identityx-api
 
+  # H2 Database Configuration
+  datasource:
+    url: jdbc:h2:mem:identityxdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password: 12345
+
+  # JPA Configuration
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  # H2 Console Configuration
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+      settings:
+        web-allow-others: false
+
 logging:
   pattern:
     console: ${LOGGING_PATTERN_CONSOLE:%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %msg%n}
