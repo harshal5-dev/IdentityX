@@ -1,5 +1,10 @@
 package com.identityx.api.auth.service;
 
+import org.springframework.data.util.Pair;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Service;
 import com.identityx.api.appuser.model.AppUser;
 import com.identityx.api.appuser.service.IAppUserService;
 import com.identityx.api.auth.dto.LoginRequest;
@@ -7,11 +12,6 @@ import com.identityx.api.auth.dto.LoginResponse;
 import com.identityx.api.auth.mapper.AuthMapper;
 import com.identityx.api.auth.security.IJwtUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.util.Pair;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +25,7 @@ public class AuthService implements IAuthService {
   public Pair<LoginResponse, String> login(LoginRequest loginRequest) {
 
     Authentication authentication = UsernamePasswordAuthenticationToken
-            .unauthenticated(loginRequest.username(), loginRequest.password());
+        .unauthenticated(loginRequest.username(), loginRequest.password());
 
     Authentication authenticated = authenticationManager.authenticate(authentication);
     LoginResponse loginResponse = new LoginResponse();
