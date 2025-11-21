@@ -53,8 +53,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
   public ResponseEntity<AppErrorResponse> handleResourceNotFoundException(
           BadCredentialsException exception, WebRequest webRequest) {
     AppErrorResponse errorResponseDTO = new AppErrorResponse(webRequest.getDescription(false),
-            HttpStatus.NOT_FOUND, exception.getMessage());
-    return new ResponseEntity<>(errorResponseDTO, HttpStatus.NOT_FOUND);
+            HttpStatus.BAD_REQUEST, exception.getMessage());
+    return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(UserAlreadyExistsException.class)

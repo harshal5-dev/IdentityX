@@ -7,6 +7,7 @@ import com.identityx.api.appuser.web.dto.RegisterAppUser;
 import com.identityx.api.appuser.web.dto.RegisterAppUserRes;
 import com.identityx.api.common.exception.UserAlreadyExistsException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -39,5 +40,11 @@ public class AppUserService implements IAppUserService {
     AppUser savedAppUser = appUserRepository.save(appUser);
     return AppUserMapper.mapToRegisterAppUser(savedAppUser);
 
+  }
+
+  @Override
+  public AppUser getAppUserByUsername(String username) {
+    Optional<AppUser> appUserOptional = appUserRepository.findByUsername(username);
+    return appUserOptional.orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
   }
 }

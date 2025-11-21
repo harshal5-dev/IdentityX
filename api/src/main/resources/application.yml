@@ -34,3 +34,9 @@ logging:
     org:
       springframework:
         security: ${SPRING_SECURITY_LOG_LEVEL:TRACE}
+
+jwt:
+  secret:
+    key: ${JWT_SECRET_KEY}
+  expiration:
+    ms: 360000

@@ -1,7 +1,7 @@
 package com.identityx.api.auth.security;
 
 import com.identityx.api.appuser.model.AppUser;
-import com.identityx.api.appuser.repo.AppUserRepository;
+import com.identityx.api.appuser.service.IAppUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -17,12 +17,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AppUserDetailsService implements UserDetailsService {
 
-  private final AppUserRepository appUserRepository;
+  private final IAppUserService appUserService;
 
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    AppUser appUser = appUserRepository.findByUsername(username)
-        .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+    AppUser appUser = appUserService.getAppUserByUsername(username);
     List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
     return new User(appUser.getUsername(), appUser.getPassword(),grantedAuthorities);
   }

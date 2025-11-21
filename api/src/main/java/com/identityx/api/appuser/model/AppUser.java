@@ -8,11 +8,16 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Getter
 @Setter
 @Entity
 @Table(name = "app_user")
 public class AppUser extends BaseEntity {
+
+  @Column(name ="user_id", nullable = false, unique = true, length = 500)
+  private UUID userId;
 
   @Column(name = "first_name", nullable = false ,length = 300)
   private String firstName;

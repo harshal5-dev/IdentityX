@@ -31,7 +31,7 @@ public class SecurityConfig {
     httpSecurity.cors(cors -> cors.configurationSource(corsConfigurationSource));
     httpSecurity.csrf(AbstractHttpConfigurer::disable);
     httpSecurity.authorizeHttpRequests(authorizeRequests ->
-            authorizeRequests.requestMatchers("/register").permitAll()
+            authorizeRequests.requestMatchers("/register", "/login").permitAll()
                     .anyRequest().authenticated());
     httpSecurity.exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler()).authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
 
