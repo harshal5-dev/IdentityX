@@ -1,17 +1,18 @@
 package com.identityx.api.appuser.service;
 
+import java.util.Optional;
+import java.util.UUID;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 import com.identityx.api.appuser.mapper.AppUserMapper;
 import com.identityx.api.appuser.model.AppUser;
 import com.identityx.api.appuser.repo.AppUserRepository;
+import com.identityx.api.appuser.web.dto.AppUserInfoResponse;
 import com.identityx.api.appuser.web.dto.RegisterAppUser;
 import com.identityx.api.appuser.web.dto.RegisterAppUserRes;
 import com.identityx.api.common.exception.UserAlreadyExistsException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,15 +24,18 @@ public class AppUserService implements IAppUserService {
   @Override
   public RegisterAppUserRes registerAppUser(RegisterAppUser registerAppUser) {
 
-    Optional<AppUser> appUserOptional = appUserRepository.findByUsername(registerAppUser.getUsername());
+    Optional<AppUser> appUserOptional =
+        appUserRepository.findByUsername(registerAppUser.getUsername());
 
     if (appUserOptional.isPresent()) {
 
       if (appUserOptional.get().getEmail().equals(registerAppUser.getEmail())) {
-        throw new UserAlreadyExistsException("User with email " + registerAppUser.getEmail() + " already exists");
+        throw new UserAlreadyExistsException(
+            "User with email " + registerAppUser.getEmail() + " already exists");
       }
 
-      throw new UserAlreadyExistsException("User with username " + registerAppUser.getUsername() + " already exists");
+      throw new UserAlreadyExistsException(
+          "User with username " + registerAppUser.getUsername() + " already exists");
     }
 
     AppUser appUser = AppUserMapper.mapToAppUser(registerAppUser);
@@ -45,6 +49,15 @@ public class AppUserService implements IAppUserService {
   @Override
   public AppUser getAppUserByUsername(String username) {
     Optional<AppUser> appUserOptional = appUserRepository.findByUsername(username);
-    return appUserOptional.orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
+    return appUserOptional.orElseThrow(
+        () -> new UsernameNotFoundException("User not found with username: " + username));
+  }
+
+  @Override
+  public AppUserInfoResponse getAppUserInfoByUserId(UUID userId) {
+    Optional<AppUser> appUserOptional = appUserRepository.findByUserId(userId);
+    AppUser appUser = appUserOptional
+        .orElseThrow(() -> new UsernameNotFoundException("User not found with userId: " + userId));
+    return AppUserMapper.mapToAppUserInfoResponse(appUser);
   }
 }

@@ -1,17 +1,13 @@
 package com.identityx.api.auth.security;
 
-import com.identityx.api.appuser.model.AppUser;
-import com.identityx.api.appuser.service.IAppUserService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.identityx.api.appuser.model.AppUser;
+import com.identityx.api.appuser.service.IAppUserService;
+import com.identityx.api.auth.dto.AppUserDetails;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -22,7 +18,6 @@ public class AppUserDetailsService implements UserDetailsService {
   @Override
   public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
     AppUser appUser = appUserService.getAppUserByUsername(username);
-    List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
-    return new User(appUser.getUsername(), appUser.getPassword(),grantedAuthorities);
+    return new AppUserDetails(appUser);
   }
 }

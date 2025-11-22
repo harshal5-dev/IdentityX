@@ -11,8 +11,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
+import com.identityx.api.auth.filter.JWTTokenValidatorFilter;
 import com.identityx.api.auth.security.AppUsernamePwdAuthenticationProvider;
+import com.identityx.api.auth.security.IJwtTokenProvider;
 import com.identityx.api.common.exception.CustomAccessDeniedHandler;
 import com.identityx.api.common.exception.CustomBasicAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
@@ -24,16 +27,20 @@ public class SecurityConfig {
   private final CorsConfigurationSource corsConfigurationSource;
 
   @Bean
-  SecurityFilterChain defaultSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
+  SecurityFilterChain defaultSecurityFilterChain(HttpSecurity httpSecurity,
+      IJwtTokenProvider jwtTokenProvider, UserDetailsService userDetailsService) throws Exception {
 
     httpSecurity
         .sessionManagement(smc -> smc.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
     httpSecurity.cors(cors -> cors.configurationSource(corsConfigurationSource));
     httpSecurity.csrf(AbstractHttpConfigurer::disable);
-    httpSecurity.authorizeHttpRequests(authorizeRequests -> authorizeRequests
-        .requestMatchers("/register", "/login").permitAll().anyRequest().authenticated());
+    httpSecurity.authorizeHttpRequests(
+        authorizeRequests -> authorizeRequests.requestMatchers("/register", "/login").permitAll()
+            .requestMatchers("/me").authenticated().anyRequest().authenticated());
     httpSecurity.exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler())
         .authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
+    httpSecurity.addFilterBefore(new JWTTokenValidatorFilter(jwtTokenProvider, userDetailsService),
+        UsernamePasswordAuthenticationFilter.class);
 
     return httpSecurity.build();
   }

@@ -1,43 +1,44 @@
 package com.identityx.api.auth.service;
 
-import org.springframework.data.util.Pair;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import com.identityx.api.appuser.model.AppUser;
-import com.identityx.api.appuser.service.IAppUserService;
+import com.identityx.api.auth.dto.AppUserDetails;
 import com.identityx.api.auth.dto.LoginRequest;
 import com.identityx.api.auth.dto.LoginResponse;
 import com.identityx.api.auth.mapper.AuthMapper;
-import com.identityx.api.auth.security.IJwtUtils;
+import com.identityx.api.auth.security.IJwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthService implements IAuthService {
 
-  private final IJwtUtils jwtUtils;
   private final AuthenticationManager authenticationManager;
-  private final IAppUserService appUserService;
+  private final IJwtTokenProvider jwtTokenProvider;
 
   @Override
-  public Pair<LoginResponse, String> login(LoginRequest loginRequest) {
+  public LoginResponse login(LoginRequest loginRequest) {
 
     Authentication authentication = UsernamePasswordAuthenticationToken
         .unauthenticated(loginRequest.username(), loginRequest.password());
 
     Authentication authenticated = authenticationManager.authenticate(authentication);
     LoginResponse loginResponse = new LoginResponse();
-    String accessToken = "";
+    String accessToken;
 
     if (authenticated.isAuthenticated()) {
-      accessToken = jwtUtils.generateJwtToken(authentication);
-      AppUser appUser = appUserService.getAppUserByUsername(loginRequest.username());
-      AuthMapper.toLoginResponse(appUser, loginResponse);
-      return Pair.of(loginResponse, accessToken);
+      accessToken = jwtTokenProvider.generateJwtToken(authenticated);
+      AppUserDetails appUserDetails = (AppUserDetails) authenticated.getPrincipal();
+
+      AuthMapper.toLoginResponse(appUserDetails, loginResponse);
+      loginResponse.setAccessToken(accessToken);
+      return loginResponse;
     }
 
-    return Pair.of(loginResponse, accessToken);
+    return loginResponse;
   }
 }
