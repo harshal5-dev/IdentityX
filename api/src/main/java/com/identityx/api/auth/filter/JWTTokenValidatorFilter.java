@@ -2,6 +2,7 @@ package com.identityx.api.auth.filter;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Set;
 import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +23,8 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class JWTTokenValidatorFilter extends OncePerRequestFilter {
+
+  private static final Set<String> EXCLUDED_PATHS = Set.of("/login", "/register", "/refresh-token");
 
   private final IJwtTokenProvider jwtTokenProvider;
   private final UserDetailsService userDetailsService;
@@ -73,8 +76,7 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
 
   @Override
   protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
-    String path = request.getServletPath();
-    return path.equals("/login") || path.equals("/register");
+    return EXCLUDED_PATHS.contains(request.getServletPath());
   }
 
 }
