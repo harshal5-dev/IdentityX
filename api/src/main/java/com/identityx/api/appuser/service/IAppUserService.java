@@ -14,4 +14,6 @@ public interface IAppUserService {
 
   AppUserInfoResponse getAppUserInfoByUserId(UUID userId);
 
+  AppUser getAppUserByUserId(UUID userId);
+
 }

@@ -1,11 +1,11 @@
 package com.identityx.api.auth.security;
 
-import org.springframework.security.core.Authentication;
+import com.identityx.api.auth.dto.AppUserDetails;
 import com.identityx.api.auth.dto.ValidateJWTTokenResponse;
 
 public interface IJwtTokenProvider {
 
-  String generateJwtToken(Authentication authentication);
+  String generateJwtToken(AppUserDetails appUserDetails);
 
   ValidateJWTTokenResponse validateJwtToken(String accessToken);
 }

@@ -1,6 +1,8 @@
 package com.identityx.api.common.exception;
 
-import com.identityx.api.common.dto.AppErrorResponse;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -15,18 +17,15 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.identityx.api.common.dto.AppErrorResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
   @Override
   protected ResponseEntity<Object> handleMethodArgumentNotValid(
-          @NonNull MethodArgumentNotValidException ex, @NonNull HttpHeaders headers,
-          @NonNull HttpStatusCode status, @NonNull WebRequest request) {
+      @NonNull MethodArgumentNotValidException ex, @NonNull HttpHeaders headers,
+      @NonNull HttpStatusCode status, @NonNull WebRequest request) {
     Map<String, String> validationErrors = new HashMap<>();
     List<ObjectError> errors = ex.getBindingResult().getAllErrors();
 
@@ -36,49 +35,65 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
       validationErrors.put(fieldName, validationMsg);
     });
     AppErrorResponse errorResponseDTO = new AppErrorResponse(request.getDescription(false),
-            HttpStatus.BAD_REQUEST, "Validation failed for one or more fields", validationErrors);
+        HttpStatus.BAD_REQUEST, "Validation failed for one or more fields", validationErrors);
 
     return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(UsernameNotFoundException.class)
   public ResponseEntity<AppErrorResponse> handleResourceNotFoundException(
-          UsernameNotFoundException exception, WebRequest webRequest) {
+      UsernameNotFoundException exception, WebRequest webRequest) {
     AppErrorResponse errorResponseDTO = new AppErrorResponse(webRequest.getDescription(false),
-            HttpStatus.NOT_FOUND, exception.getMessage());
+        HttpStatus.NOT_FOUND, exception.getMessage());
     return new ResponseEntity<>(errorResponseDTO, HttpStatus.NOT_FOUND);
   }
 
   @ExceptionHandler(BadCredentialsException.class)
   public ResponseEntity<AppErrorResponse> handleResourceNotFoundException(
-          BadCredentialsException exception, WebRequest webRequest) {
+      BadCredentialsException exception, WebRequest webRequest) {
     AppErrorResponse errorResponseDTO = new AppErrorResponse(webRequest.getDescription(false),
-            HttpStatus.BAD_REQUEST, exception.getMessage());
+        HttpStatus.BAD_REQUEST, exception.getMessage());
     return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(UserAlreadyExistsException.class)
   public ResponseEntity<AppErrorResponse> handleUserAlreadyExistsException(
-          UserAlreadyExistsException exception, WebRequest webRequest) {
+      UserAlreadyExistsException exception, WebRequest webRequest) {
     AppErrorResponse errorResponseDTO = new AppErrorResponse(webRequest.getDescription(false),
-            HttpStatus.BAD_REQUEST, exception.getMessage());
+        HttpStatus.BAD_REQUEST, exception.getMessage());
+    return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(TokenRefreshException.class)
+  public ResponseEntity<AppErrorResponse> handleTokenRefreshException(
+      TokenRefreshException exception, WebRequest webRequest) {
+    AppErrorResponse errorResponseDTO = new AppErrorResponse(webRequest.getDescription(false),
+        HttpStatus.FORBIDDEN, exception.getMessage());
+    return new ResponseEntity<>(errorResponseDTO, HttpStatus.FORBIDDEN);
+  }
+
+  @ExceptionHandler(IllegalStateException.class)
+  public ResponseEntity<AppErrorResponse> handleIllegalStateException(
+      IllegalStateException exception, WebRequest webRequest) {
+    AppErrorResponse errorResponseDTO = new AppErrorResponse(webRequest.getDescription(false),
+        HttpStatus.BAD_REQUEST, exception.getMessage());
     return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
   }
 
 
   @ExceptionHandler(RuntimeException.class)
   public ResponseEntity<AppErrorResponse> handleRuntimeException(RuntimeException exception,
-                                                                 WebRequest webRequest) {
+      WebRequest webRequest) {
     AppErrorResponse errorResponseDTO = new AppErrorResponse(webRequest.getDescription(false),
-            HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
     return new ResponseEntity<>(errorResponseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<AppErrorResponse> handleGlobalException(Exception exception,
-                                                                WebRequest webRequest) {
+      WebRequest webRequest) {
     AppErrorResponse errorResponseDTO = new AppErrorResponse(webRequest.getDescription(false),
-            HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
+        HttpStatus.INTERNAL_SERVER_ERROR, exception.getMessage());
     return new ResponseEntity<>(errorResponseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }

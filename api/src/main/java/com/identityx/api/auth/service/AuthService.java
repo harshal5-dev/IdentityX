@@ -1,5 +1,6 @@
 package com.identityx.api.auth.service;
 
+import org.springframework.data.util.Pair;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,24 +22,24 @@ public class AuthService implements IAuthService {
   private final IJwtTokenProvider jwtTokenProvider;
 
   @Override
-  public LoginResponse login(LoginRequest loginRequest) {
+  public Pair<LoginResponse, String> login(LoginRequest loginRequest) {
 
     Authentication authentication = UsernamePasswordAuthenticationToken
         .unauthenticated(loginRequest.username(), loginRequest.password());
 
     Authentication authenticated = authenticationManager.authenticate(authentication);
     LoginResponse loginResponse = new LoginResponse();
-    String accessToken;
+    String accessToken = "";
 
     if (authenticated.isAuthenticated()) {
-      accessToken = jwtTokenProvider.generateJwtToken(authenticated);
       AppUserDetails appUserDetails = (AppUserDetails) authenticated.getPrincipal();
+      accessToken = jwtTokenProvider.generateJwtToken(appUserDetails);
+
 
       AuthMapper.toLoginResponse(appUserDetails, loginResponse);
-      loginResponse.setAccessToken(accessToken);
-      return loginResponse;
+      return Pair.of(loginResponse, accessToken != null ? accessToken : "");
     }
 
-    return loginResponse;
+    return Pair.of(loginResponse, accessToken);
   }
 }

@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -40,8 +39,7 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null,
-            userDetails.getAuthorities() != null ? userDetails.getAuthorities()
-                : AuthorityUtils.NO_AUTHORITIES);
+            userDetails.getAuthorities());
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
       } else {

@@ -27,7 +27,7 @@ public class AppUserController {
   private final IAppUserService appUserService;
 
   @GetMapping("/me")
-  public ResponseEntity<AppResponse<AppUserInfoResponse>> getMethodName(
+  public ResponseEntity<AppResponse<AppUserInfoResponse>> getAppUserInfo(
       Authentication authentication) {
     AppUserDetails appUserDetails = (AppUserDetails) authentication.getPrincipal();
 

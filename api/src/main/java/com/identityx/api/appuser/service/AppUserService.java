@@ -60,4 +60,11 @@ public class AppUserService implements IAppUserService {
         .orElseThrow(() -> new UsernameNotFoundException("User not found with userId: " + userId));
     return AppUserMapper.mapToAppUserInfoResponse(appUser);
   }
+
+  @Override
+  public AppUser getAppUserByUserId(UUID userId) {
+    Optional<AppUser> appUserOptional = appUserRepository.findByUserId(userId);
+    return appUserOptional
+        .orElseThrow(() -> new UsernameNotFoundException("User not found with userId: " + userId));
+  }
 }

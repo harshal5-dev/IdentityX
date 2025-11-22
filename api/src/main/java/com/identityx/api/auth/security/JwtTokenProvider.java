@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.stream.Collectors;
 import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 import com.identityx.api.auth.dto.AppUserDetails;
@@ -30,9 +29,8 @@ public class JwtTokenProvider implements IJwtTokenProvider {
   private Long jwtExpirationMs;
 
   @Override
-  public String generateJwtToken(Authentication authentication) {
+  public String generateJwtToken(AppUserDetails appUserDetails) {
 
-    AppUserDetails appUserDetails = (AppUserDetails) authentication.getPrincipal();
     SecretKey secretKey = Keys.hmacShaKeyFor(jwtSecretKey.getBytes(StandardCharsets.UTF_8));
 
     return Jwts.builder().issuer("IdentityX").subject(appUserDetails.getUserId().toString())
