@@ -33,4 +33,14 @@ public class AuthController {
         .body(response);
   }
 
+  @PostMapping("/logout")
+  public ResponseEntity<AppResponse<Void>> logout() {
+    ResponseCookie cookie = ResponseCookie.from(AuthConstants.AUTHORIZATION_COOKIE, "")
+        .httpOnly(true).path("/").secure(false).maxAge(0).sameSite("Strict").build();
+
+    AppResponse<Void> response = new AppResponse<>(HttpStatus.OK, null, "Logout successful");
+    return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.SET_COOKIE, cookie.toString())
+        .body(response);
+  }
+
 }

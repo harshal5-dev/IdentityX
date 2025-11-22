@@ -1,6 +1,8 @@
 package com.identityx.api.auth.filter;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -44,6 +46,13 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authentication);
       } else {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType("application/json;charset=UTF-8");
+        String message = "Invalid or expired token";
+        String path = request.getRequestURI();
+        String jsonResponse = String.format(
+            "{\"apiPath\": \"%s\", \"errorCode\": \"%s\", \"errorMessage\": \"%s\", \"errorTime\": \"%s\"}",
+            path, HttpStatus.UNAUTHORIZED, message, LocalDateTime.now());
+        response.getWriter().write(jsonResponse);
         return;
       }
     }
