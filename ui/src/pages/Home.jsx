@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useSelector } from "react-redux";
 import {
   Card,
   CardContent,
@@ -10,16 +10,12 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
-  KeyRound,
   Shield,
   Users,
   Activity,
   Lock,
   CheckCircle2,
-  LogOut,
-  Settings,
   User as UserIcon,
   ArrowRight,
   Zap,
@@ -27,25 +23,13 @@ import {
   Database,
   Cloud,
   TrendingUp,
+  LogIn,
+  UserPlus,
 } from "lucide-react";
 
 const Home = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    const userData = localStorage.getItem("user");
-    if (!userData) {
-      navigate("/login");
-    } else {
-      setUser(JSON.parse(userData));
-    }
-  }, [navigate]);
-
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    navigate("/login");
-  };
+  const { user } = useSelector((state) => state.auth);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -110,10 +94,8 @@ const Home = () => {
     },
   ];
 
-  if (!user) return null;
-
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background overflow-x-hidden">
       {/* Floating Background Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -147,67 +129,63 @@ const Home = () => {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.5 }}
-        className="backdrop-blur-xl bg-white/70 dark:bg-gray-900/70 shadow-lg border-b border-gray-200 dark:border-gray-800 sticky top-0 z-50"
+        className="backdrop-blur-md bg-white/80 dark:bg-gray-900/80 shadow-sm border-b border-border/40 sticky top-0 z-50"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-3">
               <motion.div
                 whileHover={{ rotate: 360, scale: 1.1 }}
                 transition={{ duration: 0.6 }}
+                className="cursor-pointer"
+                onClick={() => navigate("/")}
               >
                 <img
                   src="/logo.svg"
                   alt="IdentityX Logo"
-                  className="w-14 h-14 drop-shadow-lg"
+                  className="w-9 h-9 drop-shadow-md"
                 />
               </motion.div>
               <div>
-                <h1 className="text-2xl font-bold text-brand-gradient">
+                <h1 className="text-lg font-bold text-brand-gradient">
                   IdentityX
                 </h1>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-[10px] text-muted-foreground leading-none">
                   Enterprise Authentication Platform
                 </p>
               </div>
             </div>
-            <div className="flex items-center space-x-3">
-              <Badge className="badge-success border-0 px-3 py-1">
-                <div
-                  className="w-2 h-2 rounded-full mr-2 animate-pulse"
-                  style={{ backgroundColor: "var(--brand-success)" }}
-                />
-                Online
-              </Badge>
-              <Avatar
-                className="w-9 h-9 cursor-pointer border-2 border-blue-500"
-                onClick={() => navigate("/user-info")}
-              >
-                <AvatarFallback className="bg-brand-gradient text-primary-foreground font-semibold">
-                  {user?.name?.charAt(0)?.toUpperCase() || "U"}
-                </AvatarFallback>
-              </Avatar>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Button variant="ghost" size="icon" className="rounded-lg">
-                  <Settings className="h-5 w-5" />
-                </Button>
-              </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
+            <div className="flex items-center gap-2">
+              {user ? (
                 <Button
-                  variant="outline"
-                  onClick={handleLogout}
-                  className="rounded-lg border-red-200 hover:bg-red-50 hover:text-red-600 dark:border-red-900 dark:hover:bg-red-950"
+                  onClick={() => navigate("/dashboard")}
+                  size="sm"
+                  className="bg-brand-gradient hover:opacity-90 text-white h-8 text-sm"
                 >
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Logout
+                  Dashboard
+                  <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
                 </Button>
-              </motion.div>
+              ) : (
+                <>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => navigate("/login")}
+                    className="h-8 text-sm"
+                  >
+                    <LogIn className="h-3.5 w-3.5 mr-1.5" />
+                    Login
+                  </Button>
+                  <Button
+                    size="sm"
+                    onClick={() => navigate("/register")}
+                    className="bg-brand-gradient hover:opacity-90 text-white h-8 text-sm"
+                  >
+                    <UserPlus className="h-3.5 w-3.5 mr-1.5" />
+                    Get Started
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -224,11 +202,11 @@ const Home = () => {
           {/* Hero Section */}
           <motion.div variants={itemVariants} className="relative">
             <Card className="border-0 shadow-2xl bg-brand-gradient text-primary-foreground overflow-hidden">
-              <div className="absolute inset-0 bg-grid-white/[0.05] bg-[size:20px_20px]" />
-              <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full blur-3xl -mr-48 -mt-48" />
-              <CardContent className="relative p-8 md:p-12">
-                <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-                  <div className="flex-1 space-y-4">
+              <div className="absolute inset-0 bg-grid-white/[0.05] bg-size-[20px_20px]" />
+              <div className="absolute top-0 right-0 w-72 h-72 bg-white/10 rounded-full blur-3xl opacity-50" />
+              <CardContent className="relative p-6 md:p-10">
+                <div className="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-8">
+                  <div className="flex-1 space-y-4 max-w-2xl">
                     <motion.div
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
@@ -243,41 +221,46 @@ const Home = () => {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.3 }}
-                      className="text-4xl md:text-5xl font-bold"
+                      className="text-3xl md:text-4xl lg:text-5xl font-bold leading-tight"
                     >
-                      Welcome back, <br />
+                      Secure Authentication <br />
                       <span className="text-primary-foreground/90">
-                        {user?.name}
+                        Made Simple
                       </span>
                     </motion.h2>
                     <motion.p
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.4 }}
-                      className="text-lg text-primary-foreground/80 max-w-xl"
+                      className="text-base md:text-lg text-primary-foreground/80"
                     >
-                      Your secure authentication dashboard. Manage your
-                      identity, monitor activity, and control access all in one
-                      place.
+                      Enterprise-grade identity management platform with JWT
+                      authentication, automatic token refresh, and advanced
+                      security features.
                     </motion.p>
                     <motion.div
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.5 }}
-                      className="flex gap-3"
+                      className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto"
                     >
                       <Button
-                        onClick={() => navigate("/user-info")}
-                        className="bg-card text-brand-gradient hover:bg-muted shadow-xl"
+                        onClick={() =>
+                          navigate(user ? "/dashboard" : "/register")
+                        }
+                        size="lg"
+                        className="w-full sm:w-auto bg-white text-brand-gradient hover:bg-white/90 shadow-xl font-semibold px-6"
                       >
-                        View Profile
-                        <ArrowRight className="ml-2 h-4 w-4" />
+                        {user ? "Go to Dashboard" : "Get Started Free"}
+                        <ArrowRight className="ml-2 h-5 w-5" />
                       </Button>
                       <Button
+                        onClick={() => navigate(user ? "/user-info" : "/login")}
                         variant="outline"
-                        className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm"
+                        size="lg"
+                        className="w-full sm:w-auto border-2 border-white/50 text-white hover:bg-white/20 hover:border-white backdrop-blur-sm font-semibold px-6"
                       >
-                        Documentation
+                        {user ? "View Profile" : "Sign In"}
                       </Button>
                     </motion.div>
                   </div>
@@ -285,26 +268,34 @@ const Home = () => {
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: 0.4 }}
-                    className="flex gap-4"
+                    className="hidden lg:flex gap-3 shrink-0"
                   >
-                    <div className="space-y-4">
-                      <div className="w-32 h-32 bg-white/20 backdrop-blur-xl rounded-2xl flex flex-col items-center justify-center shadow-2xl">
-                        <Shield className="w-12 h-12 mb-2" />
-                        <span className="text-sm font-semibold">Secure</span>
+                    <div className="space-y-3">
+                      <div className="w-28 h-28 bg-white/20 backdrop-blur-xl rounded-xl flex flex-col items-center justify-center shadow-xl p-3">
+                        <Shield className="w-10 h-10 mb-2 text-white" />
+                        <span className="text-xs font-bold text-white text-center leading-tight">
+                          Secure
+                        </span>
                       </div>
-                      <div className="w-32 h-32 bg-white/20 backdrop-blur-xl rounded-2xl flex flex-col items-center justify-center shadow-2xl">
-                        <Globe className="w-12 h-12 mb-2" />
-                        <span className="text-sm font-semibold">Global</span>
+                      <div className="w-28 h-28 bg-white/20 backdrop-blur-xl rounded-xl flex flex-col items-center justify-center shadow-xl p-3">
+                        <Globe className="w-10 h-10 mb-2 text-white" />
+                        <span className="text-xs font-bold text-white text-center leading-tight">
+                          Global
+                        </span>
                       </div>
                     </div>
-                    <div className="space-y-4 mt-8">
-                      <div className="w-32 h-32 bg-white/20 backdrop-blur-xl rounded-2xl flex flex-col items-center justify-center shadow-2xl">
-                        <Zap className="w-12 h-12 mb-2" />
-                        <span className="text-sm font-semibold">Fast</span>
+                    <div className="space-y-3 mt-6">
+                      <div className="w-28 h-28 bg-white/20 backdrop-blur-xl rounded-xl flex flex-col items-center justify-center shadow-xl p-3">
+                        <Zap className="w-10 h-10 mb-2 text-white" />
+                        <span className="text-xs font-bold text-white text-center leading-tight">
+                          Fast
+                        </span>
                       </div>
-                      <div className="w-32 h-32 bg-white/20 backdrop-blur-xl rounded-2xl flex flex-col items-center justify-center shadow-2xl">
-                        <Cloud className="w-12 h-12 mb-2" />
-                        <span className="text-sm font-semibold">Cloud</span>
+                      <div className="w-28 h-28 bg-white/20 backdrop-blur-xl rounded-xl flex flex-col items-center justify-center shadow-xl p-3">
+                        <Cloud className="w-10 h-10 mb-2 text-white" />
+                        <span className="text-xs font-bold text-white text-center leading-tight">
+                          Cloud
+                        </span>
                       </div>
                     </div>
                   </motion.div>
@@ -384,86 +375,6 @@ const Home = () => {
                 </Card>
               </motion.div>
             ))}
-          </motion.div>
-
-          {/* Quick Actions */}
-          <motion.div variants={itemVariants}>
-            <Card className="border-0 shadow-xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl">
-              <CardHeader className="pb-4">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle className="text-2xl font-bold">
-                      Quick Actions
-                    </CardTitle>
-                    <CardDescription className="mt-1">
-                      Manage your identity and security settings
-                    </CardDescription>
-                  </div>
-                  <Database className="w-8 h-8 text-muted-foreground" />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <button
-                      onClick={() => navigate("/user-info")}
-                      className="w-full h-32 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/30 transition-all duration-300 flex flex-col items-center justify-center space-y-3 group"
-                    >
-                      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-blue-500 to-cyan-500 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                        <UserIcon className="w-7 h-7 text-white" />
-                      </div>
-                      <div className="text-center">
-                        <span className="font-semibold text-gray-900 dark:text-white block">
-                          User Profile
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          View & Edit
-                        </span>
-                      </div>
-                    </button>
-                  </motion.div>
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <button className="w-full h-32 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-700 hover:border-purple-500 dark:hover:border-purple-500 hover:bg-purple-50 dark:hover:bg-purple-950/30 transition-all duration-300 flex flex-col items-center justify-center space-y-3 group">
-                      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                        <Shield className="w-7 h-7 text-white" />
-                      </div>
-                      <div className="text-center">
-                        <span className="font-semibold text-gray-900 dark:text-white block">
-                          Security
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          Manage Access
-                        </span>
-                      </div>
-                    </button>
-                  </motion.div>
-                  <motion.div
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <button className="w-full h-32 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-700 hover:border-green-500 dark:hover:border-green-500 hover:bg-green-50 dark:hover:bg-green-950/30 transition-all duration-300 flex flex-col items-center justify-center space-y-3 group">
-                      <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                        <Activity className="w-7 h-7 text-white" />
-                      </div>
-                      <div className="text-center">
-                        <span className="font-semibold text-gray-900 dark:text-white block">
-                          Activity Log
-                        </span>
-                        <span className="text-xs text-muted-foreground">
-                          Track Events
-                        </span>
-                      </div>
-                    </button>
-                  </motion.div>
-                </div>
-              </CardContent>
-            </Card>
           </motion.div>
         </motion.div>
       </main>

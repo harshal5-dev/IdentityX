@@ -1,27 +1,29 @@
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
+import Dashboard from "./pages/Dashboard";
 import UserInfo from "./pages/UserInfo";
+import NotFound from "./pages/NotFound";
+import Forbidden from "./pages/Forbidden";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        {/* Public Routes */}
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/403" element={<Forbidden />} />
+
+        {/* Protected Routes */}
         <Route
-          path="/home"
+          path="/dashboard"
           element={
             <ProtectedRoute>
-              <Home />
+              <Dashboard />
             </ProtectedRoute>
           }
         />
@@ -33,6 +35,9 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        {/* 404 - Must be last */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );

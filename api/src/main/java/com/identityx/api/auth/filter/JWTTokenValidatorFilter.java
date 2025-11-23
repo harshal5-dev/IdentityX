@@ -24,7 +24,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class JWTTokenValidatorFilter extends OncePerRequestFilter {
 
-  private static final Set<String> EXCLUDED_PATHS = Set.of("/login", "/register", "/refresh-token");
+  private static final Set<String> EXCLUDED_PATHS =
+      Set.of("/api/auth/login", "/api/user/register", "/api/auth/refresh-token");
 
   private final IJwtTokenProvider jwtTokenProvider;
   private final UserDetailsService userDetailsService;

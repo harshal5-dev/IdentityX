@@ -35,8 +35,8 @@ public class SecurityConfig {
     httpSecurity.cors(cors -> cors.configurationSource(corsConfigurationSource));
     httpSecurity.csrf(AbstractHttpConfigurer::disable);
     httpSecurity.authorizeHttpRequests(authorizeRequests -> authorizeRequests
-        .requestMatchers("/register", "/login", "/refresh-token").permitAll().anyRequest()
-        .authenticated());
+        .requestMatchers("/api/user/register", "/api/auth/login", "/api/auth/refresh-token")
+        .permitAll().anyRequest().authenticated());
     httpSecurity.exceptionHandling(ehc -> ehc.accessDeniedHandler(new CustomAccessDeniedHandler())
         .authenticationEntryPoint(new CustomBasicAuthenticationEntryPoint()));
     httpSecurity.addFilterBefore(new JWTTokenValidatorFilter(jwtTokenProvider, userDetailsService),

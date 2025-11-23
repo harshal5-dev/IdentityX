@@ -2,7 +2,6 @@ package com.identityx.api.config;
 
 import java.util.Collections;
 import java.util.List;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -17,7 +16,7 @@ public class CorsConfig {
     CorsConfiguration configuration = new CorsConfiguration();
 
     // Allow specific origins (add more as needed)
-    configuration.setAllowedOrigins(Collections.singletonList("http://localhost:4200"));
+    configuration.setAllowedOrigins(Collections.singletonList("http://localhost:5173"));
 
     // Allow all headers
     configuration.setAllowedHeaders(Collections.singletonList("*"));

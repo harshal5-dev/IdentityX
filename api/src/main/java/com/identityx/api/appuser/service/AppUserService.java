@@ -24,18 +24,20 @@ public class AppUserService implements IAppUserService {
   @Override
   public RegisterAppUserRes registerAppUser(RegisterAppUser registerAppUser) {
 
-    Optional<AppUser> appUserOptional =
-        appUserRepository.findByUsername(registerAppUser.getUsername());
+    Optional<AppUser> appUserOptional = appUserRepository
+        .findByUsernameOrEmail(registerAppUser.getUsername(), registerAppUser.getEmail());
 
     if (appUserOptional.isPresent()) {
+
+      if (appUserOptional.get().getUsername().equals(registerAppUser.getUsername())) {
+        throw new UserAlreadyExistsException(
+            "User with username " + registerAppUser.getUsername() + " already exists");
+      }
 
       if (appUserOptional.get().getEmail().equals(registerAppUser.getEmail())) {
         throw new UserAlreadyExistsException(
             "User with email " + registerAppUser.getEmail() + " already exists");
       }
-
-      throw new UserAlreadyExistsException(
-          "User with username " + registerAppUser.getUsername() + " already exists");
     }
 
     AppUser appUser = AppUserMapper.mapToAppUser(registerAppUser);

@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -29,7 +31,11 @@ import {
   Shield,
   Lock,
   UserPlus,
+  CheckCircle,
+  AlertCircle,
+  Home,
 } from "lucide-react";
+import { registerUser, reset, clearError } from "@/store/authSlice";
 
 const registerSchema = z
   .object({
@@ -70,6 +76,15 @@ const registerSchema = z
 
 const Register = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const {
+    isLoading,
+    isSuccess,
+    isError,
+    message,
+    errorCode,
+    validationErrors,
+  } = useSelector((state) => state.auth);
 
   const form = useForm({
     resolver: zodResolver(registerSchema),
@@ -83,12 +98,25 @@ const Register = () => {
     },
   });
 
+  useEffect(() => {
+    if (isSuccess) {
+      setTimeout(() => {
+        dispatch(reset());
+        navigate("/login");
+      }, 2000);
+    }
+
+    if (isError) {
+      setTimeout(() => {
+        dispatch(clearError());
+      }, 5000);
+    }
+  }, [isSuccess, isError, navigate, dispatch]);
+
   const onSubmit = async (data) => {
-    // Simulate API call with correct payload structure (exclude confirmPassword)
+    // Exclude confirmPassword from payload
     const { confirmPassword, ...payload } = data;
-    console.log("Registration payload:", payload);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    navigate("/login");
+    dispatch(registerUser(payload));
   };
 
   const floatingVariants = {
@@ -129,20 +157,31 @@ const Register = () => {
         >
           {/* Logo */}
           <div className="mb-8">
-            <div className="flex items-center space-x-3 mb-2">
-              <img
-                src="/logo.svg"
-                alt="IdentityX Logo"
-                className="w-14 h-14 drop-shadow-lg"
-              />
-              <div>
-                <h1 className="text-3xl font-bold text-brand-gradient">
-                  IdentityX
-                </h1>
-                <p className="text-sm text-muted-foreground">
-                  Secure Authentication
-                </p>
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center space-x-3">
+                <img
+                  src="/logo.svg"
+                  alt="IdentityX Logo"
+                  className="w-14 h-14 drop-shadow-lg"
+                />
+                <div>
+                  <h1 className="text-3xl font-bold text-brand-gradient">
+                    IdentityX
+                  </h1>
+                  <p className="text-sm text-muted-foreground">
+                    Secure Authentication
+                  </p>
+                </div>
               </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => navigate("/")}
+                className="h-9"
+              >
+                <Home className="w-4 h-4 mr-2" />
+                Home
+              </Button>
             </div>
           </div>
 
@@ -168,16 +207,16 @@ const Register = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>First Name</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <User className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                          <div className="relative">
+                            <User className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                            <FormControl>
                               <Input
                                 placeholder="John"
                                 className="pl-10 h-11"
                                 {...field}
                               />
-                            </div>
-                          </FormControl>
+                            </FormControl>
+                          </div>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -188,16 +227,16 @@ const Register = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Last Name</FormLabel>
-                          <FormControl>
-                            <div className="relative">
-                              <User className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                          <div className="relative">
+                            <User className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                            <FormControl>
                               <Input
                                 placeholder="Doe"
                                 className="pl-10 h-11"
                                 {...field}
                               />
-                            </div>
-                          </FormControl>
+                            </FormControl>
+                          </div>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -210,16 +249,16 @@ const Register = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Username</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <User className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                        <div className="relative">
+                          <User className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                          <FormControl>
                             <Input
                               placeholder="Enter your username"
                               className="pl-10 h-11"
                               {...field}
                             />
-                          </div>
-                        </FormControl>
+                          </FormControl>
+                        </div>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -231,17 +270,17 @@ const Register = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Email</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Mail className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                        <div className="relative">
+                          <Mail className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                          <FormControl>
                             <Input
                               type="email"
                               placeholder="john.doe@example.com"
                               className="pl-10 h-11"
                               {...field}
                             />
-                          </div>
-                        </FormControl>
+                          </FormControl>
+                        </div>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -253,17 +292,17 @@ const Register = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Password</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Lock className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                        <div className="relative">
+                          <Lock className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                          <FormControl>
                             <Input
                               type="password"
                               placeholder="Enter your password"
                               className="pl-10 h-11"
                               {...field}
                             />
-                          </div>
-                        </FormControl>
+                          </FormControl>
+                        </div>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -275,31 +314,104 @@ const Register = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Confirm Password</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <Lock className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                        <div className="relative">
+                          <Lock className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                          <FormControl>
                             <Input
                               type="password"
                               placeholder="Confirm your password"
                               className="pl-10 h-11"
                               {...field}
                             />
-                          </div>
-                        </FormControl>
+                          </FormControl>
+                        </div>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
 
+                  {/* Success Message */}
+                  {isSuccess && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      className="p-4 bg-linear-to-r from-green-500/10 to-emerald-500/10 border border-green-500/30 rounded-lg"
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="shrink-0 mt-0.5">
+                          <div className="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center">
+                            <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
+                          </div>
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="text-sm font-semibold text-green-600 dark:text-green-400 mb-1">
+                            Registration Successful!
+                          </h4>
+                          <p className="text-sm text-green-600/80 dark:text-green-400/80">
+                            {message} Redirecting to login...
+                          </p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* Error Message */}
+                  {isError && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      className="p-4 bg-linear-to-r from-red-500/10 to-rose-500/10 border border-red-500/30 rounded-lg"
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="shrink-0 mt-0.5">
+                          <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center">
+                            <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400" />
+                          </div>
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="text-sm font-semibold text-red-600 dark:text-red-400 mb-1">
+                            Registration Failed
+                          </h4>
+                          <p className="text-sm text-red-600/80 dark:text-red-400/80">
+                            {message}
+                          </p>
+                          {validationErrors &&
+                            Object.keys(validationErrors).length > 0 && (
+                              <ul className="mt-2 space-y-1">
+                                {Object.entries(validationErrors).map(
+                                  ([field, errors]) => (
+                                    <li
+                                      key={field}
+                                      className="text-xs text-red-600/70 dark:text-red-400/70"
+                                    >
+                                      • {field}:{" "}
+                                      {Array.isArray(errors)
+                                        ? errors.join(", ")
+                                        : errors}
+                                    </li>
+                                  )
+                                )}
+                              </ul>
+                            )}
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+
                   <Button
                     type="submit"
                     className="w-full h-11 bg-brand-gradient hover:opacity-90 text-primary-foreground shadow-md font-medium transition-all"
-                    disabled={form.formState.isSubmitting}
+                    disabled={isLoading || isSuccess}
                   >
-                    {form.formState.isSubmitting ? (
+                    {isLoading ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         Creating account...
+                      </>
+                    ) : isSuccess ? (
+                      <>
+                        <CheckCircle className="mr-2 h-4 w-4" />
+                        Account Created!
                       </>
                     ) : (
                       <>
