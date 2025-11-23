@@ -1,14 +1,18 @@
 package com.identityx.api.appuser.model;
 
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
+import com.identityx.api.address.model.Address;
 import com.identityx.api.common.model.BaseEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -16,16 +20,16 @@ import java.util.UUID;
 @Table(name = "app_user")
 public class AppUser extends BaseEntity {
 
-  @Column(name ="user_id", nullable = false, unique = true, length = 500)
+  @Column(name = "user_id", nullable = false, unique = true, length = 500)
   private UUID userId;
 
-  @Column(name = "first_name", nullable = false ,length = 300)
+  @Column(name = "first_name", nullable = false, length = 300)
   private String firstName;
 
   @Column(name = "middle_name", length = 300)
   private String middleName;
 
-  @Column(name = "last_name" ,length = 300)
+  @Column(name = "last_name", length = 300)
   private String lastName;
 
   @Column(name = "username", nullable = false, unique = true)
@@ -36,4 +40,7 @@ public class AppUser extends BaseEntity {
 
   @Column(name = "password", nullable = false, length = 500)
   private String password;
+
+  @OneToMany(mappedBy = "appUser", cascade = CascadeType.ALL)
+  private Set<Address> addresses = new HashSet<>();
 }

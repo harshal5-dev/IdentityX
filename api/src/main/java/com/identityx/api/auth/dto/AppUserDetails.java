@@ -20,6 +20,10 @@ public class AppUserDetails implements UserDetails {
     return Collections.emptyList();
   }
 
+  public Long getId() {
+    return appUser.getId();
+  }
+
   public UUID getUserId() {
     return appUser.getUserId();
   }

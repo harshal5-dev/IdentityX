@@ -80,6 +80,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     return new ResponseEntity<>(errorResponseDTO, HttpStatus.BAD_REQUEST);
   }
 
+  @ExceptionHandler(ResourceNotFoundException.class)
+  public ResponseEntity<AppErrorResponse> handleResourceNotFoundException(
+      ResourceNotFoundException exception, WebRequest webRequest) {
+    AppErrorResponse errorResponseDTO = new AppErrorResponse(webRequest.getDescription(false),
+        HttpStatus.NOT_FOUND, exception.getMessage());
+    return new ResponseEntity<>(errorResponseDTO, HttpStatus.NOT_FOUND);
+  }
+
 
   @ExceptionHandler(RuntimeException.class)
   public ResponseEntity<AppErrorResponse> handleRuntimeException(RuntimeException exception,

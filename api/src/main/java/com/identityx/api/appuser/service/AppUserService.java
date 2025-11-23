@@ -2,6 +2,7 @@ package com.identityx.api.appuser.service;
 
 import java.util.Optional;
 import java.util.UUID;
+import org.springframework.lang.NonNull;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -68,5 +69,11 @@ public class AppUserService implements IAppUserService {
     Optional<AppUser> appUserOptional = appUserRepository.findByUserId(userId);
     return appUserOptional
         .orElseThrow(() -> new UsernameNotFoundException("User not found with userId: " + userId));
+  }
+
+  @Override
+  public AppUser getAppUserById(@NonNull Long id) {
+    Optional<AppUser> appUserOptional = appUserRepository.findById(id);
+    return appUserOptional.orElseThrow(() -> new UsernameNotFoundException("User not found"));
   }
 }
