@@ -118,3 +118,100 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* IdentityX Custom Theme Colors */
+:root {
+  --brand-primary: oklch(0.588 0.206 264.4); /* Blue-600 */
+  --brand-primary-hover: oklch(0.488 0.243 264.4); /* Blue-700 */
+  --brand-secondary: oklch(0.569 0.202 278.3); /* Indigo-600 */
+  --brand-secondary-hover: oklch(0.469 0.239 278.3); /* Indigo-700 */
+  --brand-accent: oklch(0.548 0.196 293.7); /* Purple-600 */
+  --brand-accent-hover: oklch(0.448 0.233 293.7); /* Purple-700 */
+  --brand-success: oklch(0.599 0.155 163.2); /* Emerald-600 */
+  --brand-success-light: oklch(0.922 0.043 163.2); /* Emerald-100 */
+  --brand-gradient-start: var(--brand-primary);
+  --brand-gradient-mid: var(--brand-secondary);
+  --brand-gradient-end: var(--brand-accent);
+}
+
+.dark {
+  --brand-primary: oklch(0.688 0.206 264.4); /* Blue-500 */
+  --brand-primary-hover: oklch(0.788 0.206 264.4); /* Blue-400 */
+  --brand-secondary: oklch(0.669 0.202 278.3); /* Indigo-500 */
+  --brand-secondary-hover: oklch(0.769 0.202 278.3); /* Indigo-400 */
+  --brand-accent: oklch(0.648 0.196 293.7); /* Purple-500 */
+  --brand-accent-hover: oklch(0.748 0.196 293.7); /* Purple-400 */
+  --brand-success: oklch(0.699 0.155 163.2); /* Emerald-500 */
+  --brand-success-light: oklch(0.299 0.155 163.2); /* Emerald-900/30 */
+}
+
+/* Utility Classes */
+@layer components {
+  .bg-brand-gradient {
+    background: linear-gradient(
+      135deg,
+      var(--brand-gradient-start) 0%,
+      var(--brand-gradient-mid) 50%,
+      var(--brand-gradient-end) 100%
+    );
+  }
+
+  .bg-brand-gradient-r {
+    background: linear-gradient(
+      90deg,
+      var(--brand-gradient-start) 0%,
+      var(--brand-gradient-end) 100%
+    );
+  }
+
+  .bg-brand-primary {
+    background-color: var(--brand-primary);
+  }
+
+  .bg-brand-secondary {
+    background-color: var(--brand-secondary);
+  }
+
+  .text-brand-gradient {
+    background: linear-gradient(
+      90deg,
+      var(--brand-gradient-start) 0%,
+      var(--brand-gradient-end) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .border-brand {
+    border-color: var(--brand-primary);
+  }
+
+  .hover\:bg-brand-primary:hover {
+    background-color: var(--brand-primary-hover);
+  }
+
+  .shadow-brand {
+    box-shadow: 0 10px 40px -10px var(--brand-primary);
+  }
+
+  .bg-glass {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .dark .bg-glass {
+    background: rgba(17, 24, 39, 0.8);
+  }
+
+  .bg-surface {
+    background-color: var(--card);
+    border: 1px solid var(--border);
+  }
+
+  .badge-success {
+    background-color: var(--brand-success-light);
+    color: var(--brand-success);
+  }
+}
