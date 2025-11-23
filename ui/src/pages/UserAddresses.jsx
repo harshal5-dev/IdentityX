@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { apiGet } from "@/lib/api";
+import { reset } from "@/store/authSlice";
 import { AppLayout } from "@/layouts";
 import AddressForm from "@/components/AddressForm";
 import AddressList from "@/components/AddressList";
@@ -12,6 +13,7 @@ import { Card, CardContent } from "@/components/ui/card";
 
 const UserAddresses = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const { user: authUser } = useSelector((state) => state.auth);
   const [addresses, setAddresses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -28,6 +30,17 @@ const UserAddresses = () => {
       }
     } catch (err) {
       console.error("Failed to fetch addresses:", err);
+
+      // If session expired, clear any stale data and redirect to login
+      if (err.message && err.message.includes("Session expired")) {
+        localStorage.removeItem("user");
+        // Reset auth state
+        dispatch(reset());
+        // Navigate to login
+        navigate("/login", { replace: true });
+        return;
+      }
+
       setError(err.errorMessage || "Failed to load addresses");
     } finally {
       setLoading(false);
@@ -36,7 +49,7 @@ const UserAddresses = () => {
 
   useEffect(() => {
     if (!authUser) {
-      navigate("/login");
+      navigate("/login", { replace: true });
     } else {
       fetchAddresses();
     }
@@ -92,41 +105,6 @@ const UserAddresses = () => {
         transition={{ duration: 0.5 }}
         className="space-y-5 py-4"
       >
-        {/* Stats Header */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex items-center justify-between p-4 rounded-xl bg-linear-to-r from-blue-500/10 via-purple-500/10 to-pink-500/10 border border-primary/20"
-        >
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-linear-to-br from-blue-500 to-purple-600 rounded-lg shadow-md">
-              <MapPin className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <h2 className="text-lg font-bold">
-                {addresses.length === 0
-                  ? "No addresses yet"
-                  : `${addresses.length} ${
-                      addresses.length === 1 ? "Address" : "Addresses"
-                    }`}
-              </h2>
-              <p className="text-xs text-muted-foreground">
-                {addresses.filter((a) => a.isPrimary).length > 0
-                  ? `${addresses.filter((a) => a.isPrimary).length} primary`
-                  : "Add your first address"}
-              </p>
-            </div>
-          </div>
-          {addresses.length > 0 && (
-            <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-green-500/10 border border-green-500/20 rounded-lg">
-              <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-              <span className="text-xs font-medium text-green-700 dark:text-green-400">
-                Active
-              </span>
-            </div>
-          )}
-        </motion.div>
-
         {/* Add New Address Form */}
         <AddressForm onAddressAdded={handleAddressAdded} />
 

@@ -14,6 +14,7 @@ import com.identityx.api.auth.security.IRefreshTokenProvider;
 import com.identityx.api.auth.web.dto.AppUserDetails;
 import com.identityx.api.auth.web.dto.RefreshTokenResponse;
 import com.identityx.api.common.exception.TokenRefreshException;
+import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -24,6 +25,7 @@ public class RefreshTokenService implements IRefreshTokenService {
   private final IAppUserService appUserService;
   private final IRefreshTokenProvider refreshTokenProvider;
   private final IJwtTokenProvider jwtTokenProvider;
+  private final EntityManager entityManager;
 
 
   @Override
@@ -32,6 +34,9 @@ public class RefreshTokenService implements IRefreshTokenService {
 
     AppUser appUser = appUserService.getAppUserByUserId(userId);
     refreshTokenRepository.deleteByAppUser(appUser);
+
+    // Flush the deletion to ensure the unique constraint is released before inserting
+    entityManager.flush();
 
     RefreshToken refreshToken = new RefreshToken();
     refreshToken.setAppUser(appUser);

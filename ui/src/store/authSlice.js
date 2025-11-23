@@ -175,6 +175,62 @@ export const refreshAccessToken = createAsyncThunk(
   }
 );
 
+// Async thunk for fetching user info
+export const fetchUserInfo = createAsyncThunk(
+  "auth/fetchUserInfo",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await fetch("http://localhost:8080/api/user/me", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // Include cookies for authentication
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        const errorMessage =
+          data.errorMessage || data.message || "Failed to fetch user info";
+        const errorCode = data.errorCode || "UNKNOWN_ERROR";
+
+        return rejectWithValue({
+          errorMessage: getUserFriendlyMessage(
+            errorMessage,
+            errorCode,
+            response.status
+          ),
+          errorCode: errorCode,
+          validationErrors: data.validationErrors || null,
+          apiPath: data.apiPath || "",
+          statusCode: response.status,
+        });
+      }
+
+      // Store user data in localStorage with timestamp
+      const userData = {
+        ...data.data,
+        fetchedAt: Date.now(),
+      };
+      localStorage.setItem("user", JSON.stringify(userData));
+
+      return userData;
+    } catch (error) {
+      return rejectWithValue({
+        errorMessage: getUserFriendlyMessage(
+          error.message || "Network error occurred",
+          "NETWORK_ERROR"
+        ),
+        errorCode: "NETWORK_ERROR",
+        validationErrors: null,
+        apiPath: "",
+        statusCode: 0,
+      });
+    }
+  }
+);
+
 // Async thunk for user logout
 export const logoutUser = createAsyncThunk(
   "auth/logout",
@@ -292,6 +348,26 @@ const authSlice = createSlice({
         // Clear user on refresh failure (session expired)
         state.user = null;
         localStorage.removeItem("user");
+      })
+      // Fetch User Info
+      .addCase(fetchUserInfo.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+        state.message = "";
+      })
+      .addCase(fetchUserInfo.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.user = action.payload;
+        state.message = "User info updated";
+      })
+      .addCase(fetchUserInfo.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = true;
+        state.message =
+          action.payload?.errorMessage || "Failed to fetch user info";
+        state.errorCode = action.payload?.errorCode || null;
+        state.validationErrors = action.payload?.validationErrors || null;
       })
       // Logout
       .addCase(logoutUser.fulfilled, (state) => {

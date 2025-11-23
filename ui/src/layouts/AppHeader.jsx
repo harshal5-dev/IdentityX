@@ -62,40 +62,36 @@ const AppHeader = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
             {user && (
-              <motion.div
+              <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                onClick={() => navigate("/user-info")}
+                className="flex items-center gap-2.5 bg-linear-to-r from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 px-3 py-1.5 rounded-full border border-purple-200/60 dark:border-purple-800/40 hover:border-purple-300 dark:hover:border-purple-700 shadow-sm hover:shadow-md transition-all duration-200"
               >
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => navigate("/user-info")}
-                  className="flex items-center gap-2 h-8 hover:bg-muted/50"
-                >
-                  <Avatar className="h-6 w-6 border border-border/50">
-                    <AvatarFallback className="bg-brand-gradient text-primary-foreground text-[10px] font-bold">
-                      {user?.firstName?.[0]}
-                      {user?.lastName?.[0]}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="hidden sm:inline text-sm">
-                    {user?.firstName}
-                  </span>
-                </Button>
-              </motion.div>
+                <Avatar className="h-8 w-8 ring-2 ring-purple-100 dark:ring-purple-900/50">
+                  <AvatarFallback className="bg-linear-to-br from-pink-500 to-purple-600 text-white text-xs font-bold">
+                    {user?.firstName?.[0]}
+                    {user?.lastName?.[0]}
+                  </AvatarFallback>
+                </Avatar>
+                <span className="hidden sm:block text-xs font-semibold bg-linear-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                  {user?.firstName}
+                </span>
+              </motion.button>
             )}
 
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleLogout}
-              className="text-destructive hover:text-destructive hover:bg-destructive/10 h-8"
-            >
-              <LogOut className="w-3.5 h-3.5 mr-1.5" />
-              Logout
-            </Button>
+            <motion.div whileHover={{ rotate: 90 }} whileTap={{ scale: 0.9 }}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleLogout}
+                className="h-9 w-9 p-0 rounded-full border-destructive/30 hover:bg-destructive hover:text-destructive-foreground hover:border-destructive transition-all duration-300"
+              >
+                <LogOut className="w-4 h-4" />
+              </Button>
+            </motion.div>
           </div>
         </div>
       </div>

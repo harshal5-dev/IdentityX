@@ -21,7 +21,7 @@ public class RefreshToken extends BaseEntity {
   private String token;
 
   @OneToOne
-  @JoinColumn(name = "app_user_id", referencedColumnName = "id")
+  @JoinColumn(name = "app_user_id", referencedColumnName = "id", unique = false)
   private AppUser appUser;
 
   @Column(nullable = false)

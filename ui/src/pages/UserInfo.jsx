@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useSelector } from "react-redux";
-import { apiGet } from "@/lib/api";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchUserInfo, reset } from "@/store/authSlice";
 import { AppLayout } from "@/layouts";
 import {
   Card,
@@ -29,35 +29,23 @@ import {
 
 const UserInfo = () => {
   const navigate = useNavigate();
-  const { user: authUser } = useSelector((state) => state.auth);
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const dispatch = useDispatch();
+  const { user, isLoading, isError, message } = useSelector(
+    (state) => state.auth
+  );
+  const hasFetchedRef = useRef(false);
 
   useEffect(() => {
-    const fetchUserInfo = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        const response = await apiGet("/user/me");
-
-        if (response.status === "OK" && response.data) {
-          setUser(response.data);
-        }
-      } catch (err) {
-        console.error("Failed to fetch user info:", err);
-        setError(err.errorMessage || "Failed to load user information");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (!authUser) {
-      navigate("/login");
-    } else {
-      fetchUserInfo();
+    if (!user) {
+      navigate("/login", { replace: true });
+      return;
     }
-  }, [authUser, navigate]);
+
+    if (!hasFetchedRef.current) {
+      hasFetchedRef.current = true;
+      dispatch(fetchUserInfo());
+    }
+  }, [navigate, dispatch]);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -79,7 +67,7 @@ const UserInfo = () => {
     },
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center space-y-4">
@@ -90,7 +78,7 @@ const UserInfo = () => {
     );
   }
 
-  if (error) {
+  if (isError) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <Card className="max-w-md w-full">
@@ -98,10 +86,10 @@ const UserInfo = () => {
             <AlertCircle className="w-12 h-12 text-destructive mx-auto" />
             <div>
               <h3 className="font-semibold text-lg">Failed to Load Profile</h3>
-              <p className="text-sm text-muted-foreground mt-2">{error}</p>
+              <p className="text-sm text-muted-foreground mt-2">{message}</p>
             </div>
             <div className="flex gap-2 justify-center">
-              <Button onClick={() => window.location.reload()}>
+              <Button onClick={() => dispatch(fetchUserInfo())}>
                 Try Again
               </Button>
               <Button variant="outline" onClick={() => navigate("/dashboard")}>
@@ -172,10 +160,6 @@ const UserInfo = () => {
                     <Badge variant="outline" className="gap-1.5">
                       <Mail className="w-3 h-3" />
                       {user.email}
-                    </Badge>
-                    <Badge variant="outline" className="gap-1.5">
-                      <User className="w-3 h-3" />
-                      ID: {user.userId}
                     </Badge>
                   </div>
 
@@ -286,20 +270,6 @@ const UserInfo = () => {
                     Email Address
                   </p>
                   <p className="text-sm font-semibold">{user.email}</p>
-                </motion.div>
-
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.35 }}
-                  className="p-3 rounded-lg border bg-muted/30 hover:bg-muted/50 transition-colors"
-                >
-                  <p className="text-xs font-medium text-muted-foreground mb-0.5">
-                    User ID
-                  </p>
-                  <p className="text-xs font-semibold font-mono">
-                    {user.userId}
-                  </p>
                 </motion.div>
               </div>
             </CardContent>
