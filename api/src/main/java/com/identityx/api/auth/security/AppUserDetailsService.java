@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import com.identityx.api.appuser.model.AppUser;
 import com.identityx.api.appuser.service.IAppUserService;
-import com.identityx.api.auth.dto.AppUserDetails;
+import com.identityx.api.auth.web.dto.AppUserDetails;
 import lombok.RequiredArgsConstructor;
 
 @Service

@@ -1,7 +1,7 @@
 package com.identityx.api.auth.security;
 
-import com.identityx.api.auth.dto.AppUserDetails;
-import com.identityx.api.auth.dto.ValidateJWTTokenResponse;
+import com.identityx.api.auth.web.dto.AppUserDetails;
+import com.identityx.api.auth.web.dto.ValidateJWTTokenResponse;
 
 public interface IJwtTokenProvider {
 

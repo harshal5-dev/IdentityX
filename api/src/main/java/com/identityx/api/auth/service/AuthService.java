@@ -5,11 +5,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
-import com.identityx.api.auth.dto.AppUserDetails;
-import com.identityx.api.auth.dto.LoginRequest;
-import com.identityx.api.auth.dto.LoginResponse;
 import com.identityx.api.auth.mapper.AuthMapper;
 import com.identityx.api.auth.security.IJwtTokenProvider;
+import com.identityx.api.auth.web.dto.AppUserDetails;
+import com.identityx.api.auth.web.dto.LoginRequest;
+import com.identityx.api.auth.web.dto.LoginResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

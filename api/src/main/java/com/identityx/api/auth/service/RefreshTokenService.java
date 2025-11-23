@@ -6,13 +6,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.identityx.api.appuser.model.AppUser;
 import com.identityx.api.appuser.service.IAppUserService;
-import com.identityx.api.auth.dto.AppUserDetails;
-import com.identityx.api.auth.dto.RefreshTokenResponse;
 import com.identityx.api.auth.mapper.AuthMapper;
 import com.identityx.api.auth.model.RefreshToken;
 import com.identityx.api.auth.repo.RefreshTokenRepository;
 import com.identityx.api.auth.security.IJwtTokenProvider;
 import com.identityx.api.auth.security.IRefreshTokenProvider;
+import com.identityx.api.auth.web.dto.AppUserDetails;
+import com.identityx.api.auth.web.dto.RefreshTokenResponse;
 import com.identityx.api.common.exception.TokenRefreshException;
 import lombok.RequiredArgsConstructor;
 

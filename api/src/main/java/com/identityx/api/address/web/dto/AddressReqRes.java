@@ -14,5 +14,6 @@ public class AddressReqRes {
   private String country;
   private String phoneNumber;
   private Boolean isPrimary;
+  private String type;
 
 }

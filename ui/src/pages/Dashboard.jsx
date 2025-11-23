@@ -22,6 +22,7 @@ import {
   Zap,
   Clock,
   Bell,
+  MapPin,
 } from "lucide-react";
 
 const Dashboard = () => {
@@ -96,16 +97,16 @@ const Dashboard = () => {
       gradient: "from-purple-500 to-pink-500",
     },
     {
-      title: "Security",
-      description: "Review security settings",
-      icon: Shield,
-      action: () => {},
+      title: "My Addresses",
+      description: "Manage delivery addresses",
+      icon: MapPin,
+      action: () => navigate("/addresses"),
       gradient: "from-blue-500 to-cyan-500",
     },
     {
-      title: "Activity Log",
-      description: "View recent activities",
-      icon: Activity,
+      title: "Security",
+      description: "Review security settings",
+      icon: Shield,
       action: () => {},
       gradient: "from-green-500 to-emerald-500",
     },

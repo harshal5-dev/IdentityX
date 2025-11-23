@@ -4,6 +4,7 @@ import Register from "./pages/Register";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import UserInfo from "./pages/UserInfo";
+import UserAddresses from "./pages/UserAddresses";
 import NotFound from "./pages/NotFound";
 import Forbidden from "./pages/Forbidden";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -32,6 +33,14 @@ function App() {
           element={
             <ProtectedRoute>
               <UserInfo />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/addresses"
+          element={
+            <ProtectedRoute>
+              <UserAddresses />
             </ProtectedRoute>
           }
         />

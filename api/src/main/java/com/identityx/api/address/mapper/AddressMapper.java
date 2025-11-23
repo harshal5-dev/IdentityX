@@ -1,6 +1,7 @@
 package com.identityx.api.address.mapper;
 
 import com.identityx.api.address.model.Address;
+import com.identityx.api.address.model.AddressType;
 import com.identityx.api.address.web.dto.AddressReqRes;
 
 public final class AddressMapper {
@@ -16,6 +17,7 @@ public final class AddressMapper {
     addressReqRes.setCountry(address.getCountry());
     addressReqRes.setPhoneNumber(address.getPhoneNumber());
     addressReqRes.setIsPrimary(address.getIsPrimary());
+    addressReqRes.setType(address.getType().name());
     return addressReqRes;
   }
 
@@ -27,5 +29,6 @@ public final class AddressMapper {
     address.setCountry(addressReqRes.getCountry());
     address.setPhoneNumber(addressReqRes.getPhoneNumber());
     address.setIsPrimary(addressReqRes.getIsPrimary());
+    address.setType(AddressType.valueOf(addressReqRes.getType().toUpperCase()));
   }
 }

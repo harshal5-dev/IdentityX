@@ -14,7 +14,7 @@ import com.identityx.api.appuser.service.IAppUserService;
 import com.identityx.api.appuser.web.dto.AppUserInfoResponse;
 import com.identityx.api.appuser.web.dto.RegisterAppUser;
 import com.identityx.api.appuser.web.dto.RegisterAppUserRes;
-import com.identityx.api.auth.dto.AppUserDetails;
+import com.identityx.api.auth.web.dto.AppUserDetails;
 import com.identityx.api.common.dto.AppResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

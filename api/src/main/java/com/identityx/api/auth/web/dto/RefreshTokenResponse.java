@@ -1,4 +1,4 @@
-package com.identityx.api.auth.dto;
+package com.identityx.api.auth.web.dto;
 
 import java.time.Instant;
 import lombok.Getter;

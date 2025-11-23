@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.identityx.api.address.service.IAddressService;
 import com.identityx.api.address.web.dto.AddressReqRes;
-import com.identityx.api.auth.dto.AppUserDetails;
+import com.identityx.api.auth.web.dto.AppUserDetails;
 import com.identityx.api.common.dto.AppResponse;
 import lombok.RequiredArgsConstructor;
 

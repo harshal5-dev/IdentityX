@@ -1,4 +1,4 @@
-package com.identityx.api.auth.dto;
+package com.identityx.api.auth.web.dto;
 
 import java.util.UUID;
 import lombok.Getter;

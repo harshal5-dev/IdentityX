@@ -1,9 +1,9 @@
 package com.identityx.api.auth.mapper;
 
-import com.identityx.api.auth.dto.AppUserDetails;
-import com.identityx.api.auth.dto.LoginResponse;
-import com.identityx.api.auth.dto.RefreshTokenResponse;
 import com.identityx.api.auth.model.RefreshToken;
+import com.identityx.api.auth.web.dto.AppUserDetails;
+import com.identityx.api.auth.web.dto.LoginResponse;
+import com.identityx.api.auth.web.dto.RefreshTokenResponse;
 
 public final class AuthMapper {
 
