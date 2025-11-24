@@ -1,9 +1,8 @@
 package com.identityx.api.common.dto;
 
-import lombok.Getter;
-import org.springframework.http.HttpStatus;
-
 import java.time.LocalDateTime;
+import org.springframework.http.HttpStatus;
+import lombok.Getter;
 
 @Getter
 public class AppResponse<T> {

@@ -14,7 +14,6 @@ import com.identityx.api.auth.security.IRefreshTokenProvider;
 import com.identityx.api.auth.web.dto.AppUserDetails;
 import com.identityx.api.auth.web.dto.RefreshTokenResponse;
 import com.identityx.api.common.exception.TokenRefreshException;
-import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -25,7 +24,6 @@ public class RefreshTokenService implements IRefreshTokenService {
   private final IAppUserService appUserService;
   private final IRefreshTokenProvider refreshTokenProvider;
   private final IJwtTokenProvider jwtTokenProvider;
-  private final EntityManager entityManager;
 
 
   @Override
@@ -35,19 +33,10 @@ public class RefreshTokenService implements IRefreshTokenService {
     AppUser appUser = appUserService.getAppUserByUserId(userId);
     refreshTokenRepository.deleteByAppUser(appUser);
 
-    // Flush the deletion to ensure the unique constraint is released before inserting
-    entityManager.flush();
-
-    RefreshToken refreshToken = new RefreshToken();
-    refreshToken.setAppUser(appUser);
-    refreshToken.setExpiryDate(refreshTokenProvider.generateExpiryDate());
-    refreshToken.setToken(refreshTokenProvider.generateToken());
-
-    RefreshToken savedRefreshToken = refreshTokenRepository.save(refreshToken);
+    RefreshToken savedRefreshToken = saveRefreshToken(appUser);
 
     return AuthMapper.toRefreshTokenResponse(savedRefreshToken);
   }
-
 
   @Override
   @Transactional
@@ -55,21 +44,35 @@ public class RefreshTokenService implements IRefreshTokenService {
     RefreshToken refreshToken = refreshTokenRepository.findByToken(refreshAccessToken).orElseThrow(
         () -> new TokenRefreshException(refreshAccessToken, "Refresh token is not found!"));
 
-    verifyExpiration(refreshToken);
+    boolean isRefreshTokenExpired = isRefreshTokenExpired(refreshToken);
     AppUser appUser = refreshToken.getAppUser();
     String accessToken = generateAccessToken(appUser);
-    String refreshTokenStr = refreshToken.getToken();
+    String newRefreshTokenStr = refreshAccessToken;
+
+    if (isRefreshTokenExpired) {
+      refreshTokenRepository.deleteByAppUser(appUser);
+      RefreshToken newRefreshToken = saveRefreshToken(appUser);
+      newRefreshTokenStr = newRefreshToken.getToken();
+    }
+
     return Pair.of(accessToken != null ? accessToken : "",
-        refreshTokenStr != null ? refreshTokenStr : "");
+        newRefreshTokenStr != null ? newRefreshTokenStr : "");
   }
 
+  private RefreshToken saveRefreshToken(AppUser appUser) {
+    RefreshToken refreshToken = new RefreshToken();
+    refreshToken.setAppUser(appUser);
+    refreshToken.setExpiryDate(refreshTokenProvider.generateExpiryDate());
+    refreshToken.setToken(refreshTokenProvider.generateToken());
+    return refreshTokenRepository.save(refreshToken);
+  }
 
-  private void verifyExpiration(RefreshToken refreshToken) {
+  private boolean isRefreshTokenExpired(RefreshToken refreshToken) {
     if (refreshTokenProvider.isTokenExpired(refreshToken.getExpiryDate())) {
       refreshTokenRepository.delete(refreshToken);
-      throw new TokenRefreshException(refreshToken.getToken(),
-          "Refresh token was expired. Please make a new signin request");
+      return true;
     }
+    return false;
   }
 
   private String generateAccessToken(AppUser user) {

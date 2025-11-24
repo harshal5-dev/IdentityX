@@ -1,10 +1,9 @@
 package com.identityx.api.common.dto;
 
-import lombok.Getter;
-import org.springframework.http.HttpStatus;
-
 import java.time.LocalDateTime;
 import java.util.Map;
+import org.springframework.http.HttpStatus;
+import lombok.Getter;
 
 @Getter
 public class AppErrorResponse {
@@ -27,7 +26,7 @@ public class AppErrorResponse {
   }
 
   public AppErrorResponse(String apiPath, HttpStatus errorCode, String errorMessage,
-                          Map<String, String> validationErrors) {
+      Map<String, String> validationErrors) {
     this.apiPath = apiPath;
     this.errorCode = errorCode;
     this.errorMessage = errorMessage;

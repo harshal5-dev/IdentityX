@@ -29,7 +29,7 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
 
     String jsonResponse = String.format(
         "{\"apiPath\": \"%s\", \"errorCode\": \"%s\", \"errorMessage\": \"%s\", \"errorTime\": \"%s\"}",
-        path, HttpStatus.FORBIDDEN, message, LocalDateTime.now());
+        path, String.valueOf(HttpStatus.FORBIDDEN), message, LocalDateTime.now());
 
     response.getWriter().write(jsonResponse);
   }

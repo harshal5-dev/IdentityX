@@ -39,7 +39,7 @@ jwt:
   secret:
     key: ${JWT_SECRET_KEY}
   expiration:
-    ms: 360000 # 6 minutes
+    ms: 36000 # 6 minutes
   refresh:
     expiration:
       ms: 86400000 # 24 hours
