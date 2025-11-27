@@ -33,6 +33,8 @@ public class RefreshTokenService implements IRefreshTokenService {
     AppUser appUser = appUserService.getAppUserByUserId(userId);
     refreshTokenRepository.deleteByAppUser(appUser);
 
+    refreshTokenRepository.flush();
+
     RefreshToken savedRefreshToken = saveRefreshToken(appUser);
 
     return AuthMapper.toRefreshTokenResponse(savedRefreshToken);
