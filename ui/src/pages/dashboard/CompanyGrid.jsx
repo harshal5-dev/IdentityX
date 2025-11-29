@@ -13,7 +13,7 @@ const CompanyGrid = ({ companies, onSelectCompany, onCreateCompany }) => {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <h2 className="text-2xl font-bold bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
             Your Companies
           </h2>
           <p className="text-sm text-muted-foreground mt-1">

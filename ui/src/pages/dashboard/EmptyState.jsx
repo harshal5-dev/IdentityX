@@ -12,11 +12,11 @@ const EmptyState = ({ onCreateCompany }) => (
       initial={{ scale: 0 }}
       animate={{ scale: 1 }}
       transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-      className="w-24 h-24 rounded-full bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 flex items-center justify-center mb-6 shadow-2xl"
+      className="w-24 h-24 rounded-full bg-linear-to-br from-blue-500 via-indigo-500 to-purple-500 flex items-center justify-center mb-6 shadow-2xl"
     >
       <Building2 className="w-12 h-12 text-white" />
     </motion.div>
-    <h3 className="text-2xl font-bold mb-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
+    <h3 className="text-2xl font-bold mb-2 bg-linear-to-r from-blue-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent">
       Welcome to IdentityX
     </h3>
     <p className="text-muted-foreground text-center max-w-md mb-8">
