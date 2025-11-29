@@ -143,7 +143,7 @@ const Forbidden = () => {
               className="pt-8 border-t border-border/50"
             >
               <div className="flex items-start space-x-3 text-left max-w-md mx-auto">
-                <ShieldAlert className="w-5 h-5 text-yellow-500 flex-shrink-0 mt-0.5" />
+                <ShieldAlert className="w-5 h-5 text-yellow-500 shrink-0 mt-0.5" />
                 <div>
                   <p className="text-sm font-medium text-foreground mb-1">
                     Security Notice

@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
 import { apiGet } from "@/lib/api";
-import { reset } from "@/store/authSlice";
 import { AppLayout } from "@/layouts";
 import AddressForm from "@/components/AddressForm";
 import AddressList from "@/components/AddressList";
@@ -14,7 +13,12 @@ import { Card, CardContent } from "@/components/ui/card";
 const UserAddresses = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user: authUser } = useSelector((state) => state.auth);
+  const authUser = {
+    firstName: "John",
+    lastName: "Doe",
+    username: "johndoe",
+    email: "johndoe@example.com",
+  };
   const [addresses, setAddresses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -35,7 +39,6 @@ const UserAddresses = () => {
       if (err.message && err.message.includes("Session expired")) {
         localStorage.removeItem("user");
         // Reset auth state
-        dispatch(reset());
         // Navigate to login
         navigate("/login", { replace: true });
         return;

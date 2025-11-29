@@ -6,7 +6,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,6 +24,7 @@ import com.identityx.api.common.dto.AppResponse;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -53,6 +56,16 @@ public class AuthController {
     return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
         .header(HttpHeaders.SET_COOKIE, refreshCookie.toString()).body(response);
   }
+
+  @GetMapping("/is-Authenticated")
+  public ResponseEntity<AppResponse<Boolean>> isAuthenticated(Authentication authentication) {
+    if (authentication == null || !authentication.isAuthenticated()) {
+      return ResponseEntity
+          .ok(new AppResponse<>(HttpStatus.OK, false, "User is not authenticated"));
+    }
+    return ResponseEntity.ok(new AppResponse<>(HttpStatus.OK, true, "User is authenticated"));
+  }
+
 
   @PostMapping("/refresh-token")
   public ResponseEntity<AppResponse<Void>> refreshToken(HttpServletRequest request) {

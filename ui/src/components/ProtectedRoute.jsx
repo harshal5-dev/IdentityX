@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useIsAuthenticatedQuery } from "../pages/auth/authApi";
 
 /**
  * ProtectedRoute component that redirects to login if user is not authenticated
@@ -9,14 +10,15 @@ import { useSelector } from "react-redux";
 const ProtectedRoute = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, isLoading } = useSelector((state) => state.auth);
+  const authResponse = useIsAuthenticatedQuery();
+  const { isLoading, data: isAuthenticated, isFetching } = authResponse;
 
   useEffect(() => {
-    if (!isLoading && !user) {
-      // Redirect to login and save the attempted location
+    console.log("ProtectedRoute isAuthenticated:", isAuthenticated);
+    if (!isFetching && !isAuthenticated) {
       navigate("/login", { state: { from: location }, replace: true });
     }
-  }, [user, isLoading, navigate, location]);
+  }, [isAuthenticated, isLoading, navigate, location]);
 
   // Show loading state while checking authentication
   if (isLoading) {
@@ -31,7 +33,7 @@ const ProtectedRoute = ({ children }) => {
   }
 
   // If authenticated, render the protected content
-  return user ? children : null;
+  return isAuthenticated ? children : null;
 };
 
 export default ProtectedRoute;

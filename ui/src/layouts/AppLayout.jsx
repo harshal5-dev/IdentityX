@@ -1,4 +1,3 @@
-import { useTokenRefresh } from "@/hooks/useTokenRefresh";
 import AppHeader from "./AppHeader";
 
 const AppLayout = ({
@@ -9,9 +8,6 @@ const AppLayout = ({
   backPath = "/dashboard",
   maxWidth = "7xl",
 }) => {
-  // Automatically refresh token every 14 minutes
-  useTokenRefresh(14 * 60 * 1000);
-
   return (
     <div className="min-h-screen bg-background overflow-x-hidden">
       <AppHeader

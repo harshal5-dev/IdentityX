@@ -1,10 +1,24 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useDispatch, useSelector } from "react-redux";
-import { logoutUser } from "@/store/authSlice";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { LogOut, ArrowLeft } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  LogOut,
+  ArrowLeft,
+  User,
+  Settings,
+  MapPin,
+  ChevronDown,
+} from "lucide-react";
+import { useGetUserInfoQuery } from "../pages/auth/authApi";
 
 const AppHeader = ({
   title = "IdentityX",
@@ -13,11 +27,15 @@ const AppHeader = ({
   backPath = "/dashboard",
 }) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.auth);
+  const {
+    data: user,
+    isError,
+    error,
+  } = useGetUserInfoQuery(undefined, {
+    skip: false,
+  });
 
   const handleLogout = async () => {
-    await dispatch(logoutUser());
     navigate("/login");
   };
 
@@ -62,36 +80,131 @@ const AppHeader = ({
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            {user && (
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={() => navigate("/user-info")}
-                className="flex items-center gap-2.5 bg-linear-to-r from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 px-3 py-1.5 rounded-full border border-purple-200/60 dark:border-purple-800/40 hover:border-purple-300 dark:hover:border-purple-700 shadow-sm hover:shadow-md transition-all duration-200"
-              >
-                <Avatar className="h-8 w-8 ring-2 ring-purple-100 dark:ring-purple-900/50">
-                  <AvatarFallback className="bg-linear-to-br from-pink-500 to-purple-600 text-white text-xs font-bold">
-                    {user?.firstName?.[0]}
-                    {user?.lastName?.[0]}
-                  </AvatarFallback>
-                </Avatar>
-                <span className="hidden sm:block text-xs font-semibold bg-linear-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                  {user?.firstName}
-                </span>
-              </motion.button>
-            )}
+          <div className="flex items-center gap-3">
+            {user && !isError && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="relative h-10 w-10 rounded-full p-0 hover:bg-transparent focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  >
+                    <motion.div
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="relative"
+                    >
+                      <Avatar className="h-10 w-10 border-2 border-border shadow-lg ring-2 ring-muted transition-all hover:border-primary hover:shadow-brand">
+                        <AvatarFallback className="bg-brand-gradient text-white text-sm font-bold">
+                          {user?.firstName?.[0]}
+                          {user?.lastName?.[0]}
+                        </AvatarFallback>
+                      </Avatar>
+                      <span className="absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full badge-success border-2 border-background shadow-sm"></span>
+                    </motion.div>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent
+                  align="end"
+                  className="w-72 p-2 bg-popover/98 backdrop-blur-xl border border-border shadow-2xl rounded-xl"
+                >
+                  <div className="flex items-center gap-3 px-2 py-3 rounded-lg bg-accent/50 border border-border mb-2">
+                    <Avatar className="h-12 w-12 border-2 border-background shadow-md">
+                      <AvatarFallback className="bg-brand-gradient text-white text-base font-bold">
+                        {user?.firstName?.[0]}
+                        {user?.lastName?.[0]}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col flex-1 min-w-0">
+                      <p className="text-sm font-bold text-brand-gradient truncate">
+                        {user?.firstName} {user?.lastName}
+                      </p>
+                      <p className="text-xs text-muted-foreground truncate">
+                        {user?.email}
+                      </p>
+                      <p className="text-xs text-muted-foreground/80 mt-0.5">
+                        @{user?.username}
+                      </p>
+                    </div>
+                  </div>
 
-            <motion.div whileHover={{ rotate: 90 }} whileTap={{ scale: 0.9 }}>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={handleLogout}
-                className="h-9 w-9 p-0 rounded-full border-destructive/30 hover:bg-destructive hover:text-destructive-foreground hover:border-destructive transition-all duration-300"
-              >
-                <LogOut className="w-4 h-4" />
-              </Button>
-            </motion.div>
+                  <DropdownMenuSeparator className="my-2" />
+
+                  <DropdownMenuItem
+                    onClick={() => navigate("/user-info")}
+                    className="cursor-pointer rounded-lg py-2.5 px-3 hover:bg-accent focus:bg-accent group transition-all"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-100 dark:bg-blue-900/30 group-hover:bg-blue-200 dark:group-hover:bg-blue-900/50 transition-colors">
+                        <User className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium">
+                          Account Info
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          View your profile
+                        </span>
+                      </div>
+                    </div>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={() => navigate("/addresses")}
+                    className="cursor-pointer rounded-lg py-2.5 px-3 hover:bg-accent focus:bg-accent group transition-all"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-purple-100 dark:bg-purple-900/30 group-hover:bg-purple-200 dark:group-hover:bg-purple-900/50 transition-colors">
+                        <MapPin className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium">
+                          My Addresses
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          Manage locations
+                        </span>
+                      </div>
+                    </div>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    onClick={() => navigate("/dashboard")}
+                    className="cursor-pointer rounded-lg py-2.5 px-3 hover:bg-accent focus:bg-accent group transition-all"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-100 dark:bg-indigo-900/30 group-hover:bg-indigo-200 dark:group-hover:bg-indigo-900/50 transition-colors">
+                        <Settings className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-sm font-medium">Dashboard</span>
+                        <span className="text-xs text-muted-foreground">
+                          Go to main panel
+                        </span>
+                      </div>
+                    </div>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuSeparator className="my-2" />
+
+                  <DropdownMenuItem
+                    onClick={handleLogout}
+                    className="cursor-pointer rounded-lg py-2.5 px-3 text-destructive hover:bg-destructive/10 focus:bg-destructive/10 focus:text-destructive group transition-all"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-destructive/10 group-hover:bg-destructive/20 transition-colors">
+                        <LogOut className="h-4 w-4 text-destructive" />
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-sm font-semibold">Log out</span>
+                        <span className="text-xs text-muted-foreground">
+                          Sign out of account
+                        </span>
+                      </div>
+                    </div>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
         </div>
       </div>

@@ -1,6 +1,5 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useSelector } from "react-redux";
 import {
   Card,
   CardContent,
@@ -15,8 +14,6 @@ import {
   Users,
   Activity,
   Lock,
-  CheckCircle2,
-  User as UserIcon,
   ArrowRight,
   Zap,
   Globe,
@@ -26,10 +23,11 @@ import {
   LogIn,
   UserPlus,
 } from "lucide-react";
+import { useSelector } from "react-redux";
 
 const Home = () => {
   const navigate = useNavigate();
-  const { user } = useSelector((state) => state.auth);
+  const user = useSelector((state) => state.auth.user);
 
   const containerVariants = {
     hidden: { opacity: 0 },

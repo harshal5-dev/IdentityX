@@ -33,6 +33,7 @@ import {
   Home,
 } from "lucide-react";
 import { useLoginMutation } from "./authApi";
+import { setIsAuthenticated } from "./authSlice";
 
 const loginSchema = z.object({
   username: z.string().min(3, {
@@ -45,7 +46,8 @@ const loginSchema = z.object({
 
 const Login = () => {
   const navigate = useNavigate();
-  const [login, { isLoading, isSuccess, isError, error, reset }] =
+
+  const [login, { isLoading, error, reset, isSuccess, isError }] =
     useLoginMutation();
   const { data = {} } = error || {};
   const { errorMessage = "An unexpected error occurred. Please try again." } =
@@ -74,7 +76,7 @@ const Login = () => {
   }, [isSuccess, isError, navigate, reset]);
 
   const onSubmit = async (data) => {
-    login(data);
+    await login(data);
   };
 
   const handleSocialLogin = (provider) => {

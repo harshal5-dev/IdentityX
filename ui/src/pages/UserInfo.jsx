@@ -2,7 +2,6 @@ import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchUserInfo, reset } from "@/store/authSlice";
 import { AppLayout } from "@/layouts";
 import {
   Card,
@@ -43,7 +42,7 @@ const UserInfo = () => {
 
     if (!hasFetchedRef.current) {
       hasFetchedRef.current = true;
-      dispatch(fetchUserInfo());
+      // dispatch(fetchUserInfo());
     }
   }, [navigate, dispatch]);
 
@@ -89,9 +88,7 @@ const UserInfo = () => {
               <p className="text-sm text-muted-foreground mt-2">{message}</p>
             </div>
             <div className="flex gap-2 justify-center">
-              <Button onClick={() => dispatch(fetchUserInfo())}>
-                Try Again
-              </Button>
+              <Button>Try Again</Button>
               <Button variant="outline" onClick={() => navigate("/dashboard")}>
                 Go to Dashboard
               </Button>

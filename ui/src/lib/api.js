@@ -1,5 +1,4 @@
 import { store } from "@/store/store";
-import { refreshAccessToken, logoutUser } from "@/store/authSlice";
 
 const API_BASE_URL = "http://localhost:8080/api";
 
@@ -41,16 +40,15 @@ export const authenticatedFetch = async (url, options = {}) => {
 
     // If 401 Unauthorized, try to refresh token
     if (response.status === 401) {
-      const refreshResult = await store.dispatch(refreshAccessToken());
-
+      // const refreshResult = await store.dispatch(refreshAccessToken());
       // If refresh successful, retry the original request
-      if (refreshAccessToken.fulfilled.match(refreshResult)) {
-        response = await fetch(`${API_BASE_URL}${url}`, defaultOptions);
-      } else {
-        // Refresh failed, logout user
-        store.dispatch(logoutUser());
-        throw new Error("Session expired. Please login again.");
-      }
+      // if (refreshAccessToken.fulfilled.match(refreshResult)) {
+      //   response = await fetch(`${API_BASE_URL}${url}`, defaultOptions);
+      // } else {
+      //   // Refresh failed, logout user
+      //   store.dispatch(logoutUser());
+      //   throw new Error("Session expired. Please login again.");
+      // }
     }
 
     return response;
