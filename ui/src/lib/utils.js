@@ -19,7 +19,7 @@ export const baseQuery = async (args, api, extraOptions) => {
   console.log("BaseQuery Result:", result);
 
   // Intercept errors
-  if (result.error) {
+  if (result?.error) {
     const { status, data } = result.error;
     // Handle specific error codes
     if (status === 401) {

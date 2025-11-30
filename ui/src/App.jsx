@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ThemeProvider } from "@/components/theme-provider";
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
 import Home from "./pages/Home";
@@ -11,24 +12,25 @@ import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/403" element={<Forbidden />} />
+    <ThemeProvider defaultTheme="system" storageKey="identityx-ui-theme">
+      <Router>
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/403" element={<Forbidden />} />
 
-        {/* Protected Routes */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-        {/* <Route
+          {/* Protected Routes */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+          {/* <Route
           path="/user-info"
           element={
             <ProtectedRoute>
@@ -36,7 +38,7 @@ function App() {
             </ProtectedRoute>
           }
         /> */}
-        {/* <Route
+          {/* <Route
           path="/addresses"
           element={
             <ProtectedRoute>
@@ -45,10 +47,11 @@ function App() {
           }
         /> */}
 
-        {/* 404 - Must be last */}
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </Router>
+          {/* 404 - Must be last */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Router>
+    </ThemeProvider>
   );
 }
 

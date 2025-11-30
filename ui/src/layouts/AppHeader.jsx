@@ -19,6 +19,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { useGetUserInfoQuery } from "../pages/auth/authApi";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const AppHeader = ({
   title = "IdentityX",
@@ -81,6 +82,7 @@ const AppHeader = ({
           </div>
 
           <div className="flex items-center gap-3">
+            <ThemeToggle />
             {user && !isError && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -117,9 +119,6 @@ const AppHeader = ({
                     <div className="flex flex-col flex-1 min-w-0">
                       <p className="text-sm font-bold text-brand-gradient truncate">
                         {user?.firstName} {user?.lastName}
-                      </p>
-                      <p className="text-xs text-muted-foreground truncate">
-                        {user?.email}
                       </p>
                       <p className="text-xs text-muted-foreground/80 mt-0.5">
                         @{user?.username}

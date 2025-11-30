@@ -14,7 +14,7 @@ const ProtectedRoute = ({ children }) => {
   const { isLoading, data: isAuthenticated, isFetching } = authResponse;
 
   useEffect(() => {
-    console.log("ProtectedRoute isAuthenticated:", isAuthenticated);
+    console.log("ProtectedRoute authResponse:", authResponse);
     if (!isFetching && !isAuthenticated) {
       navigate("/login", { state: { from: location }, replace: true });
     }
