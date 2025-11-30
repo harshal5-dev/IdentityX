@@ -28,13 +28,7 @@ const AppHeader = ({
   backPath = "/dashboard",
 }) => {
   const navigate = useNavigate();
-  const {
-    data: user,
-    isError,
-    error,
-  } = useGetUserInfoQuery(undefined, {
-    skip: false,
-  });
+  const { data: user, isError } = useGetUserInfoQuery();
 
   const handleLogout = async () => {
     navigate("/login");

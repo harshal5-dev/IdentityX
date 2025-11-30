@@ -57,7 +57,7 @@ public class AuthController {
         .header(HttpHeaders.SET_COOKIE, refreshCookie.toString()).body(response);
   }
 
-  @GetMapping("/is-Authenticated")
+  @GetMapping("/is-authenticated")
   public ResponseEntity<AppResponse<Boolean>> isAuthenticated(Authentication authentication) {
     if (authentication == null || !authentication.isAuthenticated()) {
       return ResponseEntity

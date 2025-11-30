@@ -47,5 +47,5 @@ export const baseQuery = async (args, api, extraOptions) => {
     };
   }
 
-  return result.data;
+  return result;
 };
