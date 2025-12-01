@@ -1,39 +1,41 @@
-import { useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation, Outlet } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useIsAuthenticatedQuery } from "../pages/auth/authApi";
 
 /**
  * ProtectedRoute component that redirects to login if user is not authenticated
- * Also checks token validity and can trigger refresh if needed
+ * Uses Outlet to render child routes
  */
-const ProtectedRoute = ({ children }) => {
-  const navigate = useNavigate();
+const ProtectedRoute = () => {
   const location = useLocation();
-  const authResponse = useIsAuthenticatedQuery();
-  const { isLoading, data: isAuthenticated, isFetching } = authResponse;
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
-  useEffect(() => {
-    console.log("ProtectedRoute authResponse:", authResponse);
-    if (!isFetching && !isAuthenticated) {
-      navigate("/login", { state: { from: location }, replace: true });
-    }
-  }, [isAuthenticated, isLoading, navigate, location]);
+  // Optional: Check authentication with API
+  const { data: authData, isLoading } = useIsAuthenticatedQuery(undefined, {
+    skip: !isAuthenticated,
+  });
 
   // Show loading state while checking authentication
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading...</p>
-        </div>
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
       </div>
     );
   }
 
-  // If authenticated, render the protected content
-  return isAuthenticated ? children : null;
+  // Redirect to login if not authenticated
+  if (!isAuthenticated && !authData) {
+    console.log(
+      "User not authenticated, redirecting to login",
+      authData,
+      isAuthenticated
+    );
+    return <Navigate to="/home" state={{ from: location }} replace />;
+  }
+
+  // Render child routes
+  return <Outlet />;
 };
 
 export default ProtectedRoute;

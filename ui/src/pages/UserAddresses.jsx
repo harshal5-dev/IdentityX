@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
-import { apiGet } from "@/lib/api";
 import { AppLayout } from "@/layouts";
 import AddressForm from "@/components/AddressForm";
 import AddressList from "@/components/AddressList";
@@ -27,11 +26,7 @@ const UserAddresses = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await apiGet("/addresses");
-
-      if (response.status === "OK" && response.data) {
-        setAddresses(response.data);
-      }
+      // Simulate API call
     } catch (err) {
       console.error("Failed to fetch addresses:", err);
 

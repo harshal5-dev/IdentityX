@@ -29,16 +29,14 @@ import {
 const UserInfo = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { user, isLoading, isError, message } = useSelector(
-    (state) => state.auth
-  );
+  const { user } = useSelector((state) => state.auth.user);
   const hasFetchedRef = useRef(false);
 
   useEffect(() => {
-    if (!user) {
-      navigate("/login", { replace: true });
-      return;
-    }
+    // if (!user) {
+    //   navigate("/login", { replace: true });
+    //   return;
+    // }
 
     if (!hasFetchedRef.current) {
       hasFetchedRef.current = true;
@@ -66,18 +64,7 @@ const UserInfo = () => {
     },
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center space-y-4">
-          <Loader2 className="w-12 h-12 animate-spin mx-auto text-brand-gradient" />
-          <p className="text-muted-foreground">Loading your profile...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (isError) {
+  if (!user) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center p-4">
         <Card className="max-w-md w-full">
@@ -98,8 +85,6 @@ const UserInfo = () => {
       </div>
     );
   }
-
-  if (!user) return null;
 
   return (
     <AppLayout

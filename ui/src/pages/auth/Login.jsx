@@ -34,6 +34,7 @@ import {
 } from "lucide-react";
 import { useLoginMutation } from "./authApi";
 import { setIsAuthenticated } from "./authSlice";
+import { useDispatch } from "react-redux";
 
 const loginSchema = z.object({
   username: z.string().min(3, {
@@ -46,6 +47,7 @@ const loginSchema = z.object({
 
 const Login = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [login, { isLoading, error, reset, isSuccess, isError }] =
     useLoginMutation();
@@ -77,6 +79,7 @@ const Login = () => {
 
   const onSubmit = async (data) => {
     await login(data);
+    dispatch(setIsAuthenticated(true));
   };
 
   const handleSocialLogin = (provider) => {
