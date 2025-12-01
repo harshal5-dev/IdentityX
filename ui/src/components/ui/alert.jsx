@@ -83,7 +83,7 @@ export const Alert = ({
             </h4>
           )}
           {message && (
-            <p className={`text-sm ${style.textMuted} break-words`}>
+            <p className={`text-sm ${style.textMuted} wrap-break-word`}>
               {message}
             </p>
           )}
