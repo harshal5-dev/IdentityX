@@ -1,11 +1,17 @@
-import { ShieldUser, ShieldCheck, Home } from "lucide-react";
+import { useNavigate } from "react-router";
+import {
+  ShieldUser,
+  ShieldCheck,
+  Home,
+  FingerprintPattern,
+  ListTodo,
+} from "lucide-react";
 
 import { BackgroundBeamsWithCollision } from "@/components/ui/shadcn-io/background-beams-with-collision";
-import { LoginForm } from "./LoginForm";
+import LoginForm from "./LoginForm";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router";
 
-export default function Login() {
+const Login = () => {
   const navigate = useNavigate();
 
   return (
@@ -59,20 +65,7 @@ export default function Login() {
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="rounded-lg bg-primary/20 p-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="size-5 text-primary"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M13 10V3L4 14h7v7l9-11h-7z"
-                      />
-                    </svg>
+                    <FingerprintPattern className="size-5 text-primary" />
                   </div>
                   <div>
                     <h3 className="font-semibold">Custom Auth Flows</h3>
@@ -84,20 +77,7 @@ export default function Login() {
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="rounded-lg bg-primary/20 p-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="size-5 text-primary"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-                      />
-                    </svg>
+                    <ListTodo className="size-5 text-primary" />
                   </div>
                   <div>
                     <h3 className="font-semibold">Easy Integration</h3>
@@ -113,4 +93,6 @@ export default function Login() {
       </div>
     </div>
   );
-}
+};
+
+export default Login;

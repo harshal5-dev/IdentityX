@@ -33,7 +33,7 @@ import {
   AlertCircle,
   Home,
 } from "lucide-react";
-import { useRegisterMutation } from "./authApi";
+import { useRegisterMutation } from "../authApi";
 
 const registerSchema = z
   .object({

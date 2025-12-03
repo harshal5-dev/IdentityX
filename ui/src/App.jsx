@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme-provider";
-import Login from "./pages/auth/Login1";
-import Register from "./pages/auth/Register";
+import Login from "./pages/auth/login/login";
+import Register from "./pages/auth/register/Register";
 import Home from "./pages/Home";
 import Dashboard from "./pages/dashboard/Dashboard";
 import UserInfo from "./pages/Account/UserInfo";
