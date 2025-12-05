@@ -268,7 +268,7 @@ const RegisterForm = () => {
 
           <Field>
             <Button type="submit" disabled={isLoading || isSuccess}>
-              {isLoading ? (
+              {isLoading || isSuccess ? (
                 <>
                   <Spinner /> Creating account...
                 </>

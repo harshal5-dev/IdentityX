@@ -158,6 +158,15 @@
   --shadow-lg: var(--shadow-lg);
   --shadow-xl: var(--shadow-xl);
   --shadow-2xl: var(--shadow-2xl);
+  --animate-aurora: aurora 60s linear infinite;
+  @keyframes aurora {
+    from {
+      backgroundposition: 50% 50%, 50% 50%;
+    }
+    to {
+      backgroundposition: 350% 50%, 350% 50%;
+    }
+  }
 }
 
 @layer base {

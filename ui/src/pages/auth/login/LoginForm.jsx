@@ -151,7 +151,7 @@ const LoginForm = () => {
 
           <Field>
             <Button type="submit" disabled={isLoading || isSuccess}>
-              {isLoading ? (
+              {isLoading || isSuccess ? (
                 <>
                   <Spinner /> Please wait
                 </>
